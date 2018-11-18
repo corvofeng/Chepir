@@ -2,20 +2,17 @@
 // vim: ts=2 sw=2 sts=2 et:
 /*
  *=======================================================================
- *    Filename:painter.ts
+ *    Filename:serializable.ts
  *
  *     Version: 1.0
- *  Created on: November 12, 2018
+ *  Created on: November 15, 2018
  *
  *      Author: corvo
  *=======================================================================
  */
 
 
-class Painter {
+interface Serialize {
 
-    constructor(init: {}) {
-
-    }
 }
-
+ 

@@ -2,20 +2,18 @@
 // vim: ts=2 sw=2 sts=2 et:
 /*
  *=======================================================================
- *    Filename:painter.ts
+ *    Filename:operation.ts
  *
  *     Version: 1.0
- *  Created on: November 12, 2018
+ *  Created on: November 15, 2018
  *
  *      Author: corvo
  *=======================================================================
  */
 
 
-class Painter {
+// 一幅图画由一系列的Operation组成
 
-    constructor(init: {}) {
+class Operation {
 
-    }
 }
-

@@ -5,6 +5,15 @@ console.log("Hello World");
 //   width: 400,
 //   height: 400,
 // });
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
+import { Hello } from "./compoments/Hello";
+
+ReactDOM.render(
+    <Hello compiler="TypeScript" framework="React" />,
+    document.getElementById("example")
+);
 
 /*
 var $force = document.querySelectorAll('#force')[0]

@@ -7,11 +7,11 @@ const webpackMajorVersion = require("webpack/package.json").version.split(".")[0
 module.exports = {
     context: __dirname,
     entry: {
-        index: "./src/js/index.ts",
+        index: "./src/js/index.tsx",
         style: "./src/js/style.js",
     },
     resolve: {
-        extensions: [".js", ".ts"]
+        extensions: [".ts", ".tsx", ".js"]
     },
 
     devtool: "source-map",
@@ -32,8 +32,8 @@ module.exports = {
             },
             {
                 test: /\.tsx?$/,
-                use: "ts-loader",
-                exclude: /node_modules/
+                loader : "ts-loader",
+                // exclude: /node_modules/
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -60,15 +60,25 @@ module.exports = {
             path.resolve(__dirname, "dist"),
             path.resolve(__dirname, "node_modules"),
             path.resolve(__dirname, "src"),
+            path.resolve(__dirname, "src/js"),
             path.resolve(__dirname, "src/css"),
         ],
         "disableHostCheck": true,
     },
     plugins: [
         new HtmlWebpackPlugin({
+            filename: "index.html",
             template: "./src/index.html",
             chunks: ["index", "style"]
         }),
+        new HtmlWebpackPlugin({
+            filename: "test.html",
+            template: "./src/test.html",
+            chunks: ["index", "style"]
+        }),
+        new webpack.ProvidePlugin({
+            "React": "react",
+        }),
     ],
-    mode: "development"
+    mode: "development",
 };
