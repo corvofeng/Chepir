@@ -1,4 +1,3 @@
-console.log("Hello World");
 // var sketchpad = new Sketchpad({
 //   element: '#sketchpad',
 //   width: 400,
@@ -16,6 +15,7 @@ ReactDOM.render(
 );
 
 ReactDOM.render(<CanvasComponent/>, document.getElementById('example'));
+// console.log("Hello World");
 
 
 /*
