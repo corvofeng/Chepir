@@ -12,7 +12,7 @@
  */
 
 
-interface Serialize {
+interface ISerialize {
 
 }
  

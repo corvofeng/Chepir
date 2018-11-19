@@ -11,10 +11,10 @@ import {CanvasComponent} from "./compoments/Canvas";
 
 ReactDOM.render(
     <Hello compiler="TypeScript" framework="React" />,
-    document.getElementById("example")
+    document.getElementById("example"),
 );
 
-ReactDOM.render(<CanvasComponent/>, document.getElementById('example'));
+ReactDOM.render(<CanvasComponent/>, document.getElementById("example"));
 // console.log("Hello World");
 
 

@@ -1,4 +1,4 @@
-import { Sketchpad } from '../../node_modules/sketchpad/scripts/sketchpad';
+// import { Sketchpad } from '../../node_modules/sketchpad/scripts/sketchpad';
 
 // console.log(Sketchpad)
 // var sketchpad = new Sketchpad({
@@ -6,3 +6,8 @@ import { Sketchpad } from '../../node_modules/sketchpad/scripts/sketchpad';
 //     width: 400,
 //     height: 400,
 // });
+
+import * as ChepirCanvasCss from "../css/chepir-canvas.css";
+// const ChepirCanvasCss = require('../css/chepir-canvas.css');
+
+// export { ChepirCanvasCss };

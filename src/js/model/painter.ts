@@ -1,5 +1,3 @@
-import { Logger } from "../util/logger";
-
 "use strict";
 // vim: ts=2 sw=2 sts=2 et:
 /*
@@ -13,17 +11,19 @@ import { Logger } from "../util/logger";
  *=======================================================================
  */
 
+import { Logger } from "../util/logger";
+
 enum Colors {
   WHITE = 1,
     RED,
     GREEN,
     GRAY,
-    BLACK
+    BLACK,
 }
 
 class Position {
-  private x: Number;
-  private y: Number;
+  private x: number;
+  private y: number;
 
   constructor() {
     this.x = 0;
@@ -40,18 +40,20 @@ class Painter {
     this.curPos = new Position();
   }
   public printCurPosition() {
+    return;
   }
 }
 
 class Config {
 
   public construct() {
+    return;
   }
 }
 
 class MyCanvas {
-  private width: Number;
-  private height: Number;
+  private width: number;
+  private height: number;
   private background: Colors;
   private config: Config;
   private painter: Painter;
@@ -64,14 +66,14 @@ class MyCanvas {
     this.config = new Config();
     this.painter = new Painter();
 
-    this.context = <CanvasRenderingContext2D>canvas.getContext('2d');
-    if(this.context === null) {
+    this.context = canvas.getContext("2d") as CanvasRenderingContext2D;
+    if (this.context === null) {
       Logger.error("The Canvas not exists");
     }
   }
 
   public simpleDraw() {
-
+    return;
   }
 }
 

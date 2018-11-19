@@ -1,0 +1,35 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "rulesDirectory": ["src/js/"],
+    "rules": {
+      "no-consecutive-blank-lines": [false],
+      "max-classes-per-file": [true, 5, "exclude-class-expressions"],
+      "no-namespace": [false, "allow-declarations"],
+      "object-literal-sort-keys": false,
+      "ordered-imports": false,
+      "max-line-length": {
+        "options": [120]
+      }
+    },
+    "jsRules": {
+        "indent": [
+            "error",
+            2
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}
