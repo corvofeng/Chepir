@@ -11,7 +11,7 @@
  *=======================================================================
  */
 
-// You must install newly js-logger
+// You must install latest js-logger
 // Refer to this:
 // Github: jonnyreeves/js-logger
 //      master  => test-src/typescript-consumer/index.ts

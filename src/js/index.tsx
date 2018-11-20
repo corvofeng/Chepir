@@ -6,15 +6,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Hello } from "./compoments/Hello";
-import {CanvasComponent} from "./compoments/Canvas";
+// import { Hello } from "./compoments/Hello";
+import { CanvasComponent } from "./compoments/Canvas";
 
-ReactDOM.render(
-    <Hello compiler="TypeScript" framework="React" />,
-    document.getElementById("example"),
-);
+// ReactDOM.render(
+//   <Hello compiler="TypeScript" framework="React" />,
+//   document.getElementById("example"),
+// );
 
-ReactDOM.render(<CanvasComponent/>, document.getElementById("example"));
+ReactDOM.render(<CanvasComponent />, document.getElementById("example"));
 // console.log("Hello World");
 
 

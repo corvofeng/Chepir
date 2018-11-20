@@ -1,27 +1,43 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { Logger } from "../util/logger";
+import { ChepirCanvas, RegisterPaintEvent, DeRegisterPaintEvent } from "../model/painter";
 
 export class CanvasComponent extends React.Component {
+  private chepirCanvas: ChepirCanvas;
+
+  public constructor(props: any) {
+    super(props);
+    this.chepirCanvas = new ChepirCanvas(null);
+  }
+
   public componentDidMount() {
     this.updateCanvas();
   }
+
   public updateCanvas() {
     // const ctx = this.refs.canvas.getContext('2d');
     // ctx.fillRect(0,0, 100, 100);
+    const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
+
+
     const canvas: any = this.refs.canvas;
-    const ctx = canvas.getContext("2d");
-    ctx.fillRect(0, 0, 100, 100);
-
-
-    // const img: any = this.refs.image;
-    // img.onload = () => {
-    //   ctx.drawImage(img, 0, 0)
-    //   ctx.font = "40px Courier"
-    //   ctx.fillText("Hello world", 210, 75)
-    // }
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.chepirCanvas.setContext(ctx);
+    this.chepirCanvas.simpleDraw();
+    RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
+    // canvasHTML.addEventListener("mousedown", () => {
+    //   Logger.info("Mouse down");
+    // });
 
     Logger.info("Update canvas");
   }
+
+  public componentWillUnmount() {
+    const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
+    DeRegisterPaintEvent(canvasHTML, this.chepirCanvas);
+  }
+
   public loadStyles(cnt: number): object {
     const divStyle = {
       zIndex: `${cnt}`,
@@ -33,8 +49,13 @@ export class CanvasComponent extends React.Component {
   public render() {
     return (
       <div>
-        <canvas ref="canvas" className="chepir-canvas" style={this.loadStyles(1)} width={300} height={300} />
-        <canvas ref="canvas" className="chepir-canvas" style={this.loadStyles(2)} width={300} height={300} />
+        <canvas ref="canvas"
+          className="chepir-canvas"
+          style={this.loadStyles(1)}
+          width={this.chepirCanvas.getWidth()}
+          height={this.chepirCanvas.getHeight()}
+        />
+        {/* <canvas ref="canvas" className="chepir-canvas" style={this.loadStyles(2)} width={600} height={600} /> */}
         {/* <img ref="image" className="hidden" /> */}
       </div>
 
