@@ -94,9 +94,9 @@ canvas.height = window.innerHeight * 2;
 
     if (points.length >= 3) {
       var l = points.length - 1
-                var xc = (points[l].x + points[l - 1].x) / 2
+      var xc = (points[l].x + points[l - 1].x) / 2
       var yc = (points[l].y + points[l - 1].y) / 2
-                context.lineWidth = points[l - 1].lineWidth
+      context.lineWidth = points[l - 1].lineWidth
       context.quadraticCurveTo(points[l - 1].x, points[l - 1].y, xc, yc)
       context.stroke()
       context.beginPath()

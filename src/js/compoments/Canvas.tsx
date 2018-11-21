@@ -16,7 +16,6 @@ export class CanvasComponent extends React.Component {
   }
 
   public updateCanvas() {
-    // const ctx = this.refs.canvas.getContext('2d');
     // ctx.fillRect(0,0, 100, 100);
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
 
