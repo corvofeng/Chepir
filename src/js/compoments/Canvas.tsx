@@ -8,7 +8,7 @@ export class CanvasComponent extends React.Component {
 
   public constructor(props: any) {
     super(props);
-    this.chepirCanvas = new ChepirCanvas(null);
+    this.chepirCanvas = new ChepirCanvas(null, null);
   }
 
   public componentDidMount() {
@@ -19,10 +19,12 @@ export class CanvasComponent extends React.Component {
     // ctx.fillRect(0,0, 100, 100);
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
 
-
     const canvas: any = this.refs.canvas;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    // console.log(typeof(canvas));
     this.chepirCanvas.setContext(ctx);
+    this.chepirCanvas.setCanvas(canvas);
+    // this.chepirCanvas.setCanvas();
     this.chepirCanvas.simpleDraw();
     RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
     // canvasHTML.addEventListener("mousedown", () => {
@@ -56,8 +58,10 @@ export class CanvasComponent extends React.Component {
         />
         {/* <canvas ref="canvas" className="chepir-canvas" style={this.loadStyles(2)} width={600} height={600} /> */}
         {/* <img ref="image" className="hidden" /> */}
+        {/* <div>
+          {this.chepirCanvas.debugInfo()}
+        </div> */}
       </div>
-
     );
   }
 }

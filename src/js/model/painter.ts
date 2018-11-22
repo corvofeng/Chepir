@@ -12,6 +12,8 @@
  */
 
 import { Logger } from "../util/logger";
+import { Assert } from "../util/util";
+import { ChepirBaseCanvas } from "./chepir_base_canvas";
 
 enum Colors {
   WHITE = 1,
@@ -125,10 +127,11 @@ function DeRegisterPaintEvent(
   return RegisterPaintEvent(htmlElement, painterEvent, false);
 }
 
-class ChepirCanvas implements IPainterEvent, EventListenerObject {
-  public eventMaps: Array<[string, string]> = [
+class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListenerObject {
+  protected eventMaps: Array<[string, string]> = [
     ["mousedown", "atMouseDown"],
     ["mouseup", "atMouseUp"],
+    ["mouseleave", "atMouseUp"],
     ["mousemove", "atMouseMove"],
   ];
 
@@ -137,103 +140,54 @@ class ChepirCanvas implements IPainterEvent, EventListenerObject {
   private background: Colors;
   private config: Config;
   private painter: Painter;
-  private context: CanvasRenderingContext2D;
   private points: Position[];
 
-  public constructor(ctx: CanvasRenderingContext2D | null) {
+  public constructor(
+    ctx: CanvasRenderingContext2D | null,
+    canvas: HTMLCanvasElement | null) {
+
+    super(ctx, canvas);
     this.width = 600;
     this.height = 600;
     this.background = Colors.WHITE;
     this.config = new Config();
     this.painter = new Painter();
     this.points = [];
-
-    // This time the ctx is null
-    this.context = ctx as CanvasRenderingContext2D;
-  }
-
-  public setContext(ctx: CanvasRenderingContext2D) {
-    this.context = ctx;
-  }
-  public contextMove(pos: Position) {
-    this.context.moveTo(pos.x, pos.y);
   }
 
   public atMouseDown(ev: Event): void {
     Logger.info("At mouse down");
     const e = ev as MouseEvent;
-    this.painter.setPosition(new Position(e.pageX, e.pageY));
+    this.painter.setPosition(this._getPosition(e));
     this.painter.setPainterIsDown(true);
-
-    this.painter.printCurPosition();
-
-    this.context.lineWidth = this.painter.getCurPresure() * 50;
-    this.context.strokeStyle = "red";
-    this.context.lineCap = "round";
-    this.context.lineJoin = "round";
-    this.context.beginPath();
-    this.contextMove(this.painter.getCurPos());
     this.points.push(this.painter.getCurPos());
-
     return;
-  }
-
-  public getAllEvents(): string[] {
-    const events: string[] = [];
-    this.eventMaps.forEach((pair: [string, string]) => {
-      events.push(pair[0]);
-    });
-    return events;
   }
 
   public atMouseUp(ev: Event): void {
     Logger.info("At mouse up");
     const e = ev as MouseEvent;
-    this.painter.setPosition(new Position(e.pageX * 2, e.pageY * 2));
+    this.painter.setPosition(this._getPosition(e));
     this.painter.setPainterIsDown(false);
     this.painter.printCurPosition();
-    const l =  this.points.length - 1;
-    this.context.quadraticCurveTo(this.points[l].x, this.points[l].y,
-              this.painter.getCurPos().x, this.painter.getCurPos().y)
-    this.context.stroke();
+    const l = this.points.length - 1;
     this.points = [];
     return;
-  }
-
-  public handleEvent(evt: Event): void {
-    this.eventMaps.forEach((pair: [string, string]) => {
-      const eventName: string = pair[0];
-      // const eventListener: EventListener =Object.call(this, pair[1], evt); //$.getOwnPropertyDescriptor(pair[1]);
-      // eventListener(evt);
-      if (evt.type === eventName) {
-        (this as any)[pair[1]](evt);
-      }
-    });
-    evt.preventDefault();
   }
 
   public atMouseMove(ev: Event): void {
     const e = ev as MouseEvent;
     if (this.painter.isDown()) {
+      const lasPos = this.painter.getCurPos();
+
       Logger.debug("Start paint");
-      this.painter.setPosition(new Position(e.pageX * 2, e.pageY * 2));
+      this.painter.setPosition(this._getPosition(e));
+      this.painter.printCurPosition();
+      this._draw(lasPos, this.painter.getCurPos(),
+        this.painter.getCurColor(), this.painter.getCurPresure(),
+        "source-over");
+
       this.points.push(this.painter.getCurPos());
-      this.context.strokeStyle = "red";
-      this.context.lineCap = "round";
-      this.context.lineJoin = "round";
-
-      if (this.points.length >= 3) {
-        const l = this.points.length - 1;
-        const xc = (this.points[l].x + this.points[l - 1].x) / 2;
-        const yc = (this.points[l].y + this.points[l - 1].y) / 2;
-
-        this.context.quadraticCurveTo(this.points[l - 1].x, this.points[l - 1].y, xc, yc);
-        this.context.stroke();
-        this.context.beginPath();
-        this.context.moveTo(xc, yc);
-      }
-
-      this.contextMove(this.painter.getCurPos());
     }
     return;
   }
@@ -247,6 +201,7 @@ class ChepirCanvas implements IPainterEvent, EventListenerObject {
   public getHeight(): number {
     return this.height;
   }
+
 }
 
 

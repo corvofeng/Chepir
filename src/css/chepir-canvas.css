@@ -29,8 +29,15 @@ canvas {
     position: absolute;
     bottom: 1em; 
 }*/
+html, body {
+}
+
+body {
+  background: '#cfcfcf'
+}
 
 .chepir-canvas {
+    border: 3px solid;
     position:absolute;
     left:0px;
     top:0px;
