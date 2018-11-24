@@ -81,9 +81,13 @@ class ChepirBaseCanvas {
      * screen, not from current canvas, we must make some conversion.
      */
     protected _getPosition(event: MouseEvent): Position {
+        const rect = this.canvas.getBoundingClientRect();
+        const x: number = event.pageX - window.pageXOffset;
+        const y: number = event.pageY - window.pageYOffset;
+
         return new Position(
-            event.pageX - this.canvas.getBoundingClientRect().left,
-            event.pageY - this.canvas.getBoundingClientRect().top,
+            (x - rect.left) / (rect.right - rect.left) * this.canvas.width,
+            (y - rect.top) / (rect.bottom - rect.top) * this.canvas.height,
         );
     }
 
