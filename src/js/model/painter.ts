@@ -14,6 +14,7 @@
 import { Logger } from "../util/logger";
 import { Assert } from "../util/util";
 import { ChepirBaseCanvas } from "./chepir_base_canvas";
+import { Operation, Track } from "./operation";
 
 enum Colors {
   WHITE = 1,
@@ -130,9 +131,9 @@ function DeRegisterPaintEvent(
 class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListenerObject {
   protected eventMaps: Array<[string, string]> = [
     ["mousedown", "atMouseDown"],
+    ["mousemove", "atMouseMove"],
     ["mouseup", "atMouseUp"],
     ["mouseleave", "atMouseUp"],
-    ["mousemove", "atMouseMove"],
   ];
 
   private width: number;
@@ -141,18 +142,21 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
   private config: Config;
   private painter: Painter;
   private points: Position[];
+  private operations: Operation[];
+  private operCnt: number = -1;
 
   public constructor(
     ctx: CanvasRenderingContext2D | null,
     canvas: HTMLCanvasElement | null) {
 
     super(ctx, canvas);
-    this.width = 600;
-    this.height = 600;
+    this.width = 800;
+    this.height = 800;
     this.background = Colors.WHITE;
     this.config = new Config();
     this.painter = new Painter();
     this.points = [];
+    this.operations = [];
   }
 
   public atMouseDown(ev: Event): void {
@@ -160,39 +164,52 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     const e = ev as MouseEvent;
     this.painter.setPosition(this._getPosition(e));
     this.painter.setPainterIsDown(true);
-    this.points.push(this.painter.getCurPos());
+    // this.points.push(this.painter.getCurPos());
+
+    this.operations.push(new Operation(this.painter.getCurPos()));
+    this.operCnt++;
     return;
   }
 
   public atMouseUp(ev: Event): void {
     Logger.info("At mouse up");
     const e = ev as MouseEvent;
-    this.painter.setPosition(this._getPosition(e));
+    const pos = this._getPosition(e);
+    const width = 0.1;
+
+    const curOper: Operation = this.operations[this.operCnt];
+    const lastPainterPos = curOper.getLastPosition();
+
+    this.painter.setPosition(pos);
+
     this.painter.setPainterIsDown(false);
     this.painter.printCurPosition();
-    const l = this.points.length - 1;
-    this.points = [];
+
+    curOper.pushTrack(new Track(pos, width));
     return;
   }
 
   public atMouseMove(ev: Event): void {
     const e = ev as MouseEvent;
     if (this.painter.isDown()) {
-      const lasPos = this.painter.getCurPos();
+      Logger.debug("Painting!!");
+      const curOper: Operation = this.operations[this.operCnt];
+      const lastPainterPos = curOper.getLastPosition();
 
-      Logger.debug("Start paint");
-      this.painter.setPosition(this._getPosition(e));
-      this.painter.printCurPosition();
-      this._draw(lasPos, this.painter.getCurPos(),
+      const curPainterPos = this._getPosition(e);
+      const width = 0.1;
+
+      this.painter.setPosition(curPainterPos);
+
+      this._draw(lastPainterPos, curPainterPos,
         this.painter.getCurColor(), this.painter.getCurPresure(),
-        "source-over");
+      );
 
-      this.points.push(this.painter.getCurPos());
+      curOper.pushTrack(new Track(curPainterPos, width));
     }
     return;
   }
   public simpleDraw() {
-    // this.context.fillRect(0, 0, 400, 400);
     return;
   }
   public getWidth(): number {

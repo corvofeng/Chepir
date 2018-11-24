@@ -15,7 +15,6 @@ import { CanvasComponent } from "./compoments/Canvas";
 // );
 
 ReactDOM.render(<CanvasComponent />, document.getElementById("example"));
-// console.log("Hello World");
 
 
 /*

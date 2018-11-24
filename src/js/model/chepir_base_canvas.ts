@@ -87,7 +87,7 @@ class ChepirBaseCanvas {
         );
     }
 
-    protected _draw(
+    protected _stroke(
         start: Position,
         end: Position,
         color: Colors,
@@ -107,6 +107,22 @@ class ChepirBaseCanvas {
         this.context.stroke();
 
         this.context.restore();
+    }
+    protected _draw(
+        start: Position,
+        end: Position,
+        color: Colors,
+        size: number,
+    ) {
+        this._stroke(start, end, color, size, "source-over");
+    }
+    protected _erase(
+        start: Position,
+        end: Position,
+        color: Colors,
+        size: number,
+    ) {
+        this._stroke(start, end, color, size, "destination-out");
     }
 }
 
