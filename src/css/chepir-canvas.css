@@ -28,9 +28,9 @@ canvas {
     z-index: 1;
     position: absolute;
     bottom: 1em; 
-}*/
-html, body {
 }
+html, body {
+} */
 
 body {
   background: '#cfcfcf'

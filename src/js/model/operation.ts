@@ -50,6 +50,9 @@ class Operation {
     }
     return this.tracks.slice(-1)[0].pos;
   }
+  public getTrack(): Track[] {
+    return this.tracks;
+  }
 }
 
 export { Operation, Track };

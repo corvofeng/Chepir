@@ -7,13 +7,22 @@
   <title>Touch API Test</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
-
+  <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+  <script src="http://codemirror.net/lib/codemirror.js"></script>
+  <script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
+  <script src="http://codemirror.net/addon/edit/continuecomment.js"></script>
+  <script src="http://codemirror.net/mode/javascript/javascript.js"></script>
 </head>
 
 <body>
+  <!-- <fieldset id="console-log-div"></fieldset> -->
+  <div id="console-log-div"></div>
+  <!-- <p>The fieldset above will mirror <code>console.log</code> calls</p> -->
+
   <div class="container">
     <div id="example" style="position: relative;">
     </div>
   </div>
 </body>
+
 </html>

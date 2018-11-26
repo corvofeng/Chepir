@@ -2,14 +2,18 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "es6",
+    // "module": "es6",
+    // "target": "es6",
     "strict": true,
     "jsx": "react",
     "allowJs": true,
     // "lib": [ "es2015" ],
   },
   "include": [
-    "./src/**/*"
-  ]
+    "./src/**/*",
+    "node_modules/js-logger/src/logger.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+  ],
 }

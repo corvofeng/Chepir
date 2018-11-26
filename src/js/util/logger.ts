@@ -15,23 +15,20 @@
 // Refer to this:
 // Github: jonnyreeves/js-logger
 //      master  => test-src/typescript-consumer/index.ts
-import * as jsLogger from "js-logger";
-
-interface IMyLogger {
-  trace(...x: any[]): void;
-  debug(...x: any[]): void;
-  info(...x: any[]): void;
-  log(...x: any[]): void;
-  warn(...x: any[]): void;
-  error(...x: any[]): void;
-  time(label: string): void;
-  timeEnd(label: string): void;
-  setLevel(level: any): void;
-}
+import * as jsLogger from "js-logger/src/logger";
+import { ILogger, ILogHandler, IContext } from "js-logger/src/types";
+import { ConsoleLogDiv } from "./divlog";
 
 jsLogger.useDefaults();
-const myLogger: IMyLogger = jsLogger.get("Chepir");
-
+const myLogger: ILogger = jsLogger.get("Chepir");
 myLogger.setLevel(jsLogger.DEBUG);
+
+const consoleLog = new ConsoleLogDiv();
+function trans(messages: any[], context: IContext): void {
+  consoleLog.logWithCopy(messages);
+}
+
+jsLogger.setHandler(trans as ILogHandler);
+
 
 export { myLogger as Logger };

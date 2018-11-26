@@ -67,6 +67,7 @@ module.exports = {
       path.resolve(__dirname, "src/js"),
       path.resolve(__dirname, "src/css"),
     ],
+    "host": "0.0.0.0",
     "disableHostCheck": true,
   },
   plugins: [

@@ -134,6 +134,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     ["mousemove", "atMouseMove"],
     ["mouseup", "atMouseUp"],
     ["mouseleave", "atMouseUp"],
+    ["touchstart", "atTouchStart"],
   ];
 
   private width: number;
@@ -170,22 +171,29 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     this.operCnt++;
     return;
   }
+  public atTouchStart(ev: Event): void {
+    console.log("Touch Start");
+  }
 
   public atMouseUp(ev: Event): void {
     Logger.info("At mouse up");
     const e = ev as MouseEvent;
-    const pos = this._getPosition(e);
+    const curPainterPos = this._getPosition(e);
     const width = 0.1;
 
     const curOper: Operation = this.operations[this.operCnt];
     const lastPainterPos = curOper.getLastPosition();
 
-    this.painter.setPosition(pos);
+    this.painter.setPosition(curPainterPos);
 
     this.painter.setPainterIsDown(false);
     this.painter.printCurPosition();
 
-    curOper.pushTrack(new Track(pos, width));
+    this._draw(lastPainterPos, curPainterPos,
+      this.painter.getCurColor(), this.painter.getCurPresure());
+
+    curOper.pushTrack(new Track(curPainterPos, width));
+    Logger.debug("This operation made by ", curOper.getTrack().length)
     return;
   }
 
