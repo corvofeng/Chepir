@@ -70,13 +70,16 @@ class ConsoleLogDiv {
       .map(ConsoleLogDiv.ObjectToString)
       .join(" ");
 
+    // const formatLog = `[${context.name}: ${context.level.name[0]}] ${msg}`;
+    const formatLog = `[${context.level.name[0]}] ${msg}`;
+
     if (msg === this.lastLog) {
       this.lastLogCnt += 1;
-      this.replaceLastLine(`${msg} - ${this.lastLogCnt}\n`);
+      this.replaceLastLine(formatLog + ` - ${this.lastLogCnt}\n`);
     } else {
       this.lastLog = msg;
       this.lastLogCnt = 0;
-      this.codeMirroObj.getDoc().replaceRange(`${msg}\n`, this.lastPosition);
+      this.codeMirroObj.getDoc().replaceRange(formatLog + "\n", this.lastPosition);
     }
 
     this.codeMirroObj.getDoc().setCursor({ line: Infinity as number } as CodeMirror.Position);
@@ -85,8 +88,9 @@ class ConsoleLogDiv {
   private replaceLastLine(log: string): void {
     this.lastPosition.line -= 1;
     this.lastPosition.ch = 0;
-    this.codeMirroObj.getDoc().replaceRange(log, this.lastPosition,
-      { line: Infinity as number } as CodeMirror.Position
+    this.codeMirroObj.getDoc().replaceRange(log,
+      this.lastPosition,
+      { line: Infinity as number } as CodeMirror.Position,
     );
   }
 }
