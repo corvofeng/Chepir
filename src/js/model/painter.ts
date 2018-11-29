@@ -84,13 +84,16 @@ class Config {
   }
 }
 interface IChepirevents extends EventListenerObject {
-
   getAllEvents(): string[];
+}
+
+interface IPanPainterEvent extends IChepirevents {
+
 }
 
 interface IPainterEvent extends IChepirevents {
   atMouseDown: EventListener;
-  atMouseUp: EventListener;
+  atMouseUpORLeave: EventListener;
   atMouseMove: EventListener;
 
   // atTouchStart: EventListener;
@@ -100,6 +103,13 @@ interface IPainterEvent extends IChepirevents {
 
 }
 
+/**
+ * 
+ * @param htmlElement canvas对象
+ * @param painterEvent event对象, 这里选择event对象而不是回调函数, 根本
+ *                    原因是为了保证this指针的正确性
+ * @param isRegister ture表示注册, false表示销毁
+ */
 function RegisterPaintEvent(
   htmlElement: HTMLElement,
   painterEvent: IChepirevents,
@@ -120,7 +130,9 @@ function RegisterPaintEvent(
   }
   return;
 }
-
+/**
+ * Maybe it never be called, but it's pretty and good prcatice.
+ */
 function DeRegisterPaintEvent(
   htmlElement: HTMLElement,
   painterEvent: IChepirevents): void {
@@ -130,10 +142,13 @@ function DeRegisterPaintEvent(
 
 class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListenerObject {
   protected eventMaps: Array<[string, string]> = [
+    // Mocse event.
     ["mousedown", "atMouseDown"],
     ["mousemove", "atMouseMove"],
-    ["mouseup", "atMouseUp"],
-    ["mouseleave", "atMouseUp"],
+    ["mouseup", "atMouseUpORLeave"],
+    ["mouseleave", "atMouseUpORLeave"],
+
+    // Touch event
     ["touchstart", "atTouchStart"],
   ];
 
@@ -165,18 +180,22 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     const e = ev as MouseEvent;
     this.painter.setPosition(this._getPosition(e));
     this.painter.setPainterIsDown(true);
-    // this.points.push(this.painter.getCurPos());
 
     this.operations.push(new Operation(this.painter.getCurPos()));
     this.operCnt++;
     return;
   }
 
-  public atMouseUp(ev: Event): void {
-    Logger.info("At mouse up");
+  /**
+   * Wheather the mouse up or leave, it indicates the painting is over.
+   */
+  public atMouseUpORLeave(ev: Event): void {
     if (!this.painter.isDown()) {
+      // The painter does not painting, leave it go;
       return;
     }
+
+    Logger.info("At mouse up or leave");
     const e = ev as MouseEvent;
     const curPainterPos = this._getPosition(e);
     const width = 0.1;
@@ -187,13 +206,15 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     this.painter.setPosition(curPainterPos);
 
     this.painter.setPainterIsDown(false);
-    this.painter.printCurPosition();
+    // this.painter.printCurPosition();
 
     this._draw(lastPainterPos, curPainterPos,
       this.painter.getCurColor(), this.painter.getCurPresure());
 
     curOper.pushTrack(new Track(curPainterPos, width));
-    Logger.debug("This operation made by ", curOper.getTrack().length)
+    Logger.debug("Painting is OVER!! And get line length: ",
+      curOper.getTrack().length);
+
     return;
   }
 
@@ -217,9 +238,13 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     }
     return;
   }
-  public simpleDraw() {
+
+  public atTouchStart(ev: Event) {
+    Logger.debug("A simple touch is started");
+
     return;
   }
+
   public getWidth(): number {
     return this.width;
   }

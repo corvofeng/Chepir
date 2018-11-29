@@ -22,9 +22,13 @@ import { Assert } from "../util/util";
  */
 class ChepirBaseCanvas {
     /**
-     * A an tuple for events map
+     * A an tuple for events map, every use this as a base
+     * class, then eventMaps musted by covered. Or you will failed
+     * in `getAllEvents`, it uses `Assert` to make sure that
+     * the `eventMaps` is not empty.
      */
     protected eventMaps: Array<[string, string]>;
+
     private context: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
 
@@ -120,6 +124,7 @@ class ChepirBaseCanvas {
     ) {
         this._stroke(start, end, color, size, "source-over");
     }
+
     protected _erase(
         start: Position,
         end: Position,
