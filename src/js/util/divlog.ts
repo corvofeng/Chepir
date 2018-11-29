@@ -12,13 +12,26 @@
  */
 
 import * as CodeMirror from "codemirror";
+import { IContext } from "js-logger/src/types";
 
 /**
  * Refer to this  https://github.com/bahmutov/console-log-div
  */
 class ConsoleLogDiv {
+
+  public static ObjectToString(input: object | string): string {
+    if (input instanceof Object) {
+      return JSON.stringify(input);
+    } else {
+      return input;
+    }
+  }
+
   private id: string = "console-log-div";
   private codeMirroObj: CodeMirror.Editor;
+  private lastLog: string = "";
+  private lastLogCnt: number = 0;
+  private lastPosition: CodeMirror.Position = { line: 0 } as CodeMirror.Position;
 
   public constructor() {
     const outer = this.createOuterElement();
@@ -55,32 +68,32 @@ class ConsoleLogDiv {
       document.body.appendChild(outer);
     }
     outer.classList.add(this.id);
-    // const style = outer.style;
-    // // style.width = '100%';
-    // // style.minHeight = '200px';
-    // // style.maxHeight = "500px";
-    // style.fontFamily = "monospace";
-    // style.marginTop = "20px";
-    // style.marginLeft = "10px";
-    // style.marginRight = "10px";
-    // style.whiteSpace = "pre";
-    // style.border = "1px solid black";
-    // style.borderRadius = "5px";
-    // style.padding = "5px 10px";
     return outer;
   }
-  public printToDiv() {
-    const msg = Array.prototype.slice.call(arguments, 0)
-      .map(toString)
-      .join(" ");
-    const text = this.div.textContent;
-    this.div.textContent = text + msg + "\n";
-    this.codeMirroObj.getDoc().replaceRange(`${msg}\n`, { line: Infinity as number } as CodeMirror.Position);
-  }
 
-  public logWithCopy(...messages: any[]) {
-    // log.apply(null, arguments);
-    this.printToDiv.apply(this, messages);
+  public logWithCopy(messages: any[], context: IContext) {
+    const msg: string = Array.prototype.slice.call(messages, 0)
+      .map(ConsoleLogDiv.ObjectToString)
+      .join(" ");
+
+    if (msg === this.lastLog) {
+      this.lastLogCnt += 1;
+      this.replaceLastLine(`${msg} - ${this.lastLogCnt}\n`);
+    } else {
+      this.lastLog = msg;
+      this.lastLogCnt = 0;
+      this.codeMirroObj.getDoc().replaceRange(`${msg}\n`, this.lastPosition);
+    }
+
+    this.codeMirroObj.getDoc().setCursor({ line: Infinity as number } as CodeMirror.Position);
+    this.lastPosition = this.codeMirroObj.getDoc().getCursor();
+  }
+  private replaceLastLine(log: string): void {
+    this.lastPosition.line -= 1;
+    this.lastPosition.ch = 0;
+    this.codeMirroObj.getDoc().replaceRange(log, this.lastPosition,
+      { line: Infinity as number } as CodeMirror.Position
+    );
   }
 }
 

@@ -8,6 +8,7 @@
 // });
 
 import * as ChepirCanvasCss from "../css/chepir-canvas.css";
+import * as CodeMirrorCss from "codemirror/lib/codemirror"
 // const ChepirCanvasCss = require('../css/chepir-canvas.css');
 
 // export { ChepirCanvasCss };

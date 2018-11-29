@@ -24,11 +24,11 @@ const myLogger: ILogger = jsLogger.get("Chepir");
 myLogger.setLevel(jsLogger.DEBUG);
 
 const consoleLog = new ConsoleLogDiv();
+
+// 将一份日志写入到Div中
 function trans(messages: any[], context: IContext): void {
-  consoleLog.logWithCopy(messages);
+  consoleLog.logWithCopy(messages, context);
 }
-
 jsLogger.setHandler(trans as ILogHandler);
-
 
 export { myLogger as Logger };
