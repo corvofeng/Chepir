@@ -171,12 +171,12 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     this.operCnt++;
     return;
   }
-  public atTouchStart(ev: Event): void {
-    console.log("Touch Start");
-  }
 
   public atMouseUp(ev: Event): void {
     Logger.info("At mouse up");
+    if (!this.painter.isDown()) {
+      return;
+    }
     const e = ev as MouseEvent;
     const curPainterPos = this._getPosition(e);
     const width = 0.1;
