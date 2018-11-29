@@ -48,15 +48,9 @@ class ConsoleLogDiv {
       textArea,
       {
         lineNumbers: true,
+        readOnly: true,
       });
     this.codeMirroObj.setSize(800, 400);
-  }
-
-  public toString(x: any) {
-    if (x instanceof Error) {
-      return x.message;
-    }
-    return typeof x === "string" ? x : JSON.stringify(x);
   }
 
   public createOuterElement() {
