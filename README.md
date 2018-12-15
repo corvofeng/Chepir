@@ -20,3 +20,7 @@ http://perfectionkills.com/exploring-canvas-drawing-techniques/
 ### Nice and clean examples:
 
 http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/#demo-simple
+
+### About multi touch:
+
+https://developer.mozilla.org/en-US/docs/Web/API/Touch_events

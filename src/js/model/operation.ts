@@ -25,7 +25,7 @@ class Track {
 
 /**
  * 一幅图画由一系列的Operation组成, Every operation made by a
- * start point with many points floows it.
+ * start point with many points folows it.
  */
 class Operation {
   private startPos: Position;
@@ -45,13 +45,26 @@ class Operation {
   }
 
   public getLastPosition(): Position {
-    if(this.tracks.length === 0) {
+    if (this.tracks.length === 0) {
       return this.startPos;
     }
     return this.tracks.slice(-1)[0].pos;
   }
   public getTrack(): Track[] {
     return this.tracks;
+  }
+}
+
+class TouchOperation extends Operation {
+  /**
+   *  The mouse event does not have any identifier,
+   * but the touch event has.
+   */
+  private identifier: string;
+
+  constructor(pos: Position, identifier: string) {
+    super(pos);
+    this.identifier = identifier;
   }
 }
 

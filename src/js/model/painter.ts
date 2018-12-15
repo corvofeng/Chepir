@@ -150,15 +150,21 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
 
     // Touch event
     ["touchstart", "atTouchStart"],
+    ["touchmove", "atTouchMove"],
+    ["touchend", "atTouchEnd"],
+    ["touchcancel", "atTouchCancel"],
+    // atTouchEnd: EventListener;
   ];
 
   private width: number;
   private height: number;
-  private background: Colors;
-  private config: Config;
   private painter: Painter;
-  private points: Position[];
   private operations: Operation[];
+  // private background: Colors;
+  // private config: Config;
+  // private points: Position[];
+  // private touchOperations;
+  private identifer2oper: Map<number, number>;
   private operCnt: number = -1;
 
   public constructor(
@@ -168,11 +174,12 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     super(ctx, canvas);
     this.width = 800;
     this.height = 800;
-    this.background = Colors.WHITE;
-    this.config = new Config();
+    // this.background = Colors.WHITE;
+    // this.config = new Config();
     this.painter = new Painter();
-    this.points = [];
+    // this.points = [];
     this.operations = [];
+    this.identifer2oper = new Map();
   }
 
   public atMouseDown(ev: Event): void {
@@ -239,10 +246,102 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     return;
   }
 
-  public atTouchStart(ev: Event) {
-    Logger.debug("A simple touch is started");
+  /**
+   * This painter support multi touch, every touch event has their own
+   * identifier, and we can use it to identify multi touch event.
+   * Every touch event has its start and end, at this time, we consider
+   * each touch is a painter, and give it an operation.
+   *
+   * To be honest, I did not decide that weather the painter is only one.
+   * It's a little confilict, because I allow moulti touch and have one painter.
+   *
+   */
+
+
+  public atTouchStart(ev: TouchEvent) {
+    const length: number = ev.changedTouches.length;
+    for (let i = 0; i < length; i++) {
+      const idx = ev.changedTouches[i].identifier;
+      const curPainterPos = this._getPosition(ev.changedTouches[i]);
+      this.operations.push(new Operation(this.painter.getCurPos()));
+      this.operCnt++;
+
+      this.identifer2oper.set(idx, this.operCnt);
+      this.painter.setPosition(curPainterPos);
+
+      Logger.debug("idx ", idx, " start!");
+    }
+    return;
+  }
+
+  public atTouchMove(ev: TouchEvent) {
+    Logger.debug("At touch moves");
+    const length: number = ev.changedTouches.length;
+    for (let i = 0; i < length; i++) {
+      const idx = ev.changedTouches[i].identifier;
+      const curPainterPos = this._getPosition(ev.changedTouches[i]);
+
+      const operIdx: number|undefined = this.identifer2oper.get(idx);
+      if (operIdx === undefined) {
+        Logger.warn("The idx ", idx, " is invalid or dispear");
+        continue;
+      }
+      const curOper: Operation = this.operations[operIdx];
+
+      const lastPainterPos = curOper.getLastPosition();
+
+      const width = 0.1;
+
+      if (curOper.getTrack().length > 2) {
+        this._draw(lastPainterPos, curPainterPos,
+          this.painter.getCurColor(), this.painter.getCurPresure(),
+        );
+      }
+
+      curOper.pushTrack(new Track(curPainterPos, width));
+    }
 
     return;
+  }
+
+  public atTouchEnd(ev: TouchEvent) {
+    const length = ev.changedTouches.length;
+    for (let i = 0; i < length; i++) {
+      const idx = ev.changedTouches[i].identifier;
+
+      const curPainterPos = this._getPosition(ev.changedTouches[i]);
+      const width = 0.1;
+
+      const operIdx: number|undefined = this.identifer2oper.get(idx);
+
+      if (operIdx === undefined) {
+        Logger.warn("The idx ", idx, " is invalid or dispear");
+        continue;
+      }
+
+      const curOper: Operation = this.operations[operIdx];
+      const lastPainterPos = curOper.getLastPosition();
+
+      // this.painter.setPosition(curPainterPos);
+
+      this.painter.setPainterIsDown(false);
+      // this.painter.printCurPosition();
+
+      // this._draw(lastPainterPos, curPainterPos,
+      //  this.painter.getCurColor(), this.painter.getCurPresure());
+
+      curOper.pushTrack(new Track(curPainterPos, width));
+      Logger.debug("Painting is OVER!! And get line length: ",
+        curOper.getTrack().length);
+
+      this.identifer2oper.delete(idx);
+      Logger.debug("idx ", idx, " ended!");
+    }
+    return;
+
+  }
+  public atTouchCancel(ev: TouchEvent) {
+    Logger.debug(ev.targetTouches.length, "touch is canceled!");
   }
 
   public getWidth(): number {

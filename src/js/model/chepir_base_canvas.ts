@@ -13,6 +13,7 @@
 
 import { Position, Colors } from "./painter";
 import { Assert } from "../util/util";
+import { Logger } from "../util/logger";
 
 
 /**
@@ -84,7 +85,7 @@ class ChepirBaseCanvas {
      * Canvas event's position is the absulate position from the whole
      * screen, not from current canvas, we must make some conversion.
      */
-    protected _getPosition(event: MouseEvent): Position {
+    protected _getPosition(event: MouseEvent | Touch): Position {
         const rect = this.canvas.getBoundingClientRect();
         const x: number = event.pageX - window.pageXOffset;
         const y: number = event.pageY - window.pageYOffset;
@@ -122,7 +123,8 @@ class ChepirBaseCanvas {
         color: Colors,
         size: number,
     ) {
-        this._stroke(start, end, color, size, "source-over");
+      Logger.debug("From ", start, " to ", end);
+      this._stroke(start, end, color, size, "source-over");
     }
 
     protected _erase(
