@@ -95,4 +95,5 @@ class ConsoleLogDiv {
   }
 }
 
-export { ConsoleLogDiv };
+const divLog = new ConsoleLogDiv();
+export { divLog };

@@ -6,9 +6,10 @@ const webpackMajorVersion = require("webpack/package.json").version.split(".")[0
 
 module.exports = {
   context: __dirname,
+  // The code mirror need load style first.
   entry: {
+    style: "./src/js/style/style.js",
     index: "./src/js/index.tsx",
-    style: "./src/js/style.js",
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
@@ -74,7 +75,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "./src/index.html",
-      chunks: ["index", "style"]
+      chunks: ["style", "index"]
     }),
     new HtmlWebpackPlugin({
       filename: "test.html",

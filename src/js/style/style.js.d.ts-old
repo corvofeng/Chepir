@@ -1,3 +1,0 @@
-import { chepir_canvas } from "*.css";
-
-export const chepir_canvas: string;

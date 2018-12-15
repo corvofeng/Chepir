@@ -8,11 +8,13 @@ import * as ReactDOM from "react-dom";
 
 // import { Hello } from "./compoments/Hello";
 import { CanvasComponent } from "./compoments/Canvas";
+import { Logger } from "./util/logger";
 
 // ReactDOM.render(
 //   <Hello compiler="TypeScript" framework="React" />,
 //   document.getElementById("example"),
 // );
+Logger.info("Start chepir !!");
 
 ReactDOM.render(<CanvasComponent />, document.getElementById("example"));
 
