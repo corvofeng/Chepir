@@ -5,11 +5,11 @@ var webpackMajorVersion = require("webpack/package.json").version.split(".")[0];
 module.exports = {
   context: __dirname,
   entry: {
-    index: "./src/js/index.ts",
-    style: "./src/js/style.js",
+    index: "./src/js/index.tsx",
+    style: "./src/js/style/style.js",
   },
   resolve: {
-    extensions: [".js", ".ts"]
+    extensions: [".ts", ".tsx", ".js"]
   },
 
   output: {
@@ -25,7 +25,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: "ts-loader",
-        exclude: /node_modules/
+        // exclude: /node_modules/
       },
     ]
   },
