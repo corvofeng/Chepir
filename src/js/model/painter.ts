@@ -87,9 +87,6 @@ interface IChepirevents extends EventListenerObject {
   getAllEvents(): string[];
 }
 
-interface IPanPainterEvent extends IChepirevents {
-
-}
 
 interface IPainterEvent extends IChepirevents {
   atMouseDown: EventListener;
@@ -104,7 +101,7 @@ interface IPainterEvent extends IChepirevents {
 }
 
 /**
- * 
+ *
  * @param htmlElement canvas对象
  * @param painterEvent event对象, 这里选择event对象而不是回调函数, 根本
  *                    原因是为了保证this指针的正确性
@@ -130,6 +127,7 @@ function RegisterPaintEvent(
   }
   return;
 }
+
 /**
  * Maybe it never be called, but it's pretty and good prcatice.
  */
@@ -159,11 +157,21 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
   private width: number;
   private height: number;
   private painter: Painter;
+
   private operations: Operation[];
   // private background: Colors;
   // private config: Config;
   // private points: Position[];
   // private touchOperations;
+
+  /**
+   * Every touch event has an identifer, and in the `touchevent`
+   * argument, there are many `Touch` objects, the only way
+   * we could identify the object is their identifier.
+   *
+   * So, for every `Touch`, we save an identifer, point to a
+   * operation which record the current touch path.
+   */
   private identifer2oper: Map<number, number>;
   private operCnt: number = -1;
 
@@ -246,6 +254,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     return;
   }
 
+
   /**
    * This painter support multi touch, every touch event has their own
    * identifier, and we can use it to identify multi touch event.
@@ -281,7 +290,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
       const idx = ev.changedTouches[i].identifier;
       const curPainterPos = this._getPosition(ev.changedTouches[i]);
 
-      const operIdx: number|undefined = this.identifer2oper.get(idx);
+      const operIdx: number | undefined = this.identifer2oper.get(idx);
       if (operIdx === undefined) {
         Logger.warn("The idx ", idx, " is invalid or dispear");
         continue;
@@ -312,7 +321,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
       const curPainterPos = this._getPosition(ev.changedTouches[i]);
       const width = 0.1;
 
-      const operIdx: number|undefined = this.identifer2oper.get(idx);
+      const operIdx: number | undefined = this.identifer2oper.get(idx);
 
       if (operIdx === undefined) {
         Logger.warn("The idx ", idx, " is invalid or dispear");
@@ -332,7 +341,8 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
 
       curOper.pushTrack(new Track(curPainterPos, width));
       Logger.debug("Painting is OVER!! And get line length: ",
-        curOper.getTrack().length);
+        curOper.getTrack().length,
+      );
 
       this.identifer2oper.delete(idx);
       Logger.debug("idx ", idx, " ended!");
@@ -350,7 +360,6 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
   public getHeight(): number {
     return this.height;
   }
-
 }
 
 
@@ -361,4 +370,3 @@ export {
   RegisterPaintEvent,
   DeRegisterPaintEvent,
 };
-

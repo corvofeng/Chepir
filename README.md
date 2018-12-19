@@ -1,6 +1,6 @@
 # Chepir
 
-`React` + `Typescript` + `Canvas`
+`React` + `Typescript` + `Canvas`.
 
 ## Some references:
 

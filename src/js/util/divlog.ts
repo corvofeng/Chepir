@@ -15,7 +15,11 @@ import * as CodeMirror from "codemirror";
 import { IContext } from "js-logger/src/types";
 
 /**
- * Refer to this  https://github.com/bahmutov/console-log-div
+ * Refer to this  https://github.com/bahmutov/console-log-div.
+ *
+ * In ipad, it's not easy to use the console, but we need the console, need logs.
+ * I write this class for log print, may be it's simple, but it's just enough.
+ *
  */
 class ConsoleLogDiv {
 

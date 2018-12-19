@@ -123,7 +123,7 @@ class ChepirBaseCanvas {
         color: Colors,
         size: number,
     ) {
-      Logger.debug("From ", start, " to ", end);
+    //   Logger.debug("From ", start, " to ", end);
       this._stroke(start, end, color, size, "source-over");
     }
 

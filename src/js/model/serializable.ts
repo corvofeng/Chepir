@@ -12,7 +12,14 @@
  */
 
 
-interface ISerialize {
 
+/**
+ * This is the interface for serialize object, object should implements it to
+ * enable transfer.
+ *
+ */
+interface ISerialize {
+  encode(): void;
+  decode(): void;
 }
- 
+
