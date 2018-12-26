@@ -16,7 +16,7 @@ import { Logger } from "./util/logger";
 // );
 Logger.info("Start chepir !!");
 
-ReactDOM.render(<CanvasComponent />, document.getElementById("example"));
+ReactDOM.render(<CanvasComponent />, document.getElementById("chepir"));
 
 
 /*

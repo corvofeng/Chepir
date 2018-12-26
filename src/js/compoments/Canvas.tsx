@@ -4,11 +4,13 @@ import { Logger } from "../util/logger";
 import { ChepirCanvas, RegisterPaintEvent, DeRegisterPaintEvent } from "../model/painter";
 
 export class CanvasComponent extends React.Component {
-  private chepirCanvas: ChepirCanvas;
+  private element: HTMLDivElement | null;
+  private chepirCanvas: ChepirCanvas | null;
 
   public constructor(props: any) {
     super(props);
-    this.chepirCanvas = new ChepirCanvas(null, null);
+    this.chepirCanvas = null;
+    this.element = null;
   }
 
   public componentDidMount() {
@@ -17,25 +19,35 @@ export class CanvasComponent extends React.Component {
 
   public updateCanvas() {
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
+    let width: number = 800;
+    let height: number = 800;
+
+    if (this.element) {
+      width = this.element.offsetWidth;
+      height = this.element.offsetHeight;
+      Logger.info("Update canvas");
+    }
 
     const canvas: any = this.refs.canvas;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.chepirCanvas.setContext(ctx);
-    this.chepirCanvas.setCanvas(canvas);
+
+    this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height);
+    // canvas.width = 800;
+    // canvas.height = 800;
+    // this.chepirCanvas.setContext(ctx);
+    // this.chepirCanvas.setCanvas(canvas);
     RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
 
-    // this.chepirCanvas.setCanvas();
-    // this.chepirCanvas.simpleDraw();
-    // canvasHTML.addEventListener("mousedown", () => {
-    //   Logger.info("Mouse down");
-    // });
+    // Every time the div changed, call updateDimensions
+    // window.addEventListener("resize", this);
 
-    Logger.info("Update canvas");
   }
 
   public componentWillUnmount() {
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
-    DeRegisterPaintEvent(canvasHTML, this.chepirCanvas);
+    if (this.chepirCanvas) {
+      DeRegisterPaintEvent(canvasHTML, this.chepirCanvas);
+    }
   }
 
   public loadStyles(cnt: number): object {
@@ -48,14 +60,18 @@ export class CanvasComponent extends React.Component {
 
   public render() {
     return (
-      <div>
+      <div
+        ref={(ele) => { this.element = ele; }}
+        style={{
+          width: "100%",
+          height: "800px",
+        }}
+      >
         <canvas ref="canvas"
           className="chepir-canvas"
           style={this.loadStyles(1)}
-          width={this.chepirCanvas.getWidth()}
-          height={this.chepirCanvas.getHeight()}
         >
-        Sorry, your browser is too old for this.
+          Sorry, your browser is too old for this.
         </canvas>
         {/* <canvas ref="canvas" className="chepir-canvas" style={this.loadStyles(2)} width={600} height={600} /> */}
         {/* <img ref="image" className="hidden" /> */}

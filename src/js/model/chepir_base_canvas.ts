@@ -35,13 +35,19 @@ class ChepirBaseCanvas {
 
     public constructor(
         ctx: CanvasRenderingContext2D | null,
-        canvas: HTMLCanvasElement | null) {
+        canvas: HTMLCanvasElement | null,
+        width: number = 800,
+        height: number = 800,
+    ) {
 
         // This time the ctx may be null
         this.context = ctx as CanvasRenderingContext2D;
         this.canvas = canvas as HTMLCanvasElement;
         this.eventMaps = [];
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
+
     public setContext(ctx: CanvasRenderingContext2D) {
         this.context = ctx;
     }
@@ -80,6 +86,28 @@ class ChepirBaseCanvas {
         });
         evt.preventDefault();
     }
+
+    public getWidth(): number {
+        return this.canvas.width;
+    }
+    public getHeight(): number {
+        return this.canvas.height;
+    }
+
+    // resize canvas will lost their data.
+    protected setWidth(width: number) {
+        this.context.save();
+        this.canvas.width = width;
+        this.context.restore();
+    }
+
+    protected setHeight(height: number): void {
+        this.context.save();
+        this.canvas.height = height;
+        this.context.restore();
+    }
+
+
 
     /**
      * Canvas event's position is the absulate position from the whole
@@ -123,8 +151,8 @@ class ChepirBaseCanvas {
         color: Colors,
         size: number,
     ) {
-    //   Logger.debug("From ", start, " to ", end);
-      this._stroke(start, end, color, size, "source-over");
+        //   Logger.debug("From ", start, " to ", end);
+        this._stroke(start, end, color, size, "source-over");
     }
 
     protected _erase(
@@ -135,6 +163,10 @@ class ChepirBaseCanvas {
     ) {
         this._stroke(start, end, color, size, "destination-out");
     }
+
+
+
+
 }
 
 export { ChepirBaseCanvas };

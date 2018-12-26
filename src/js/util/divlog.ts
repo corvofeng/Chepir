@@ -54,7 +54,7 @@ class ConsoleLogDiv {
         lineNumbers: true,
         readOnly: true,
       });
-    this.codeMirroObj.setSize(800, 400);
+    // this.codeMirroObj.setSize(800, 400);
   }
 
   public createOuterElement() {

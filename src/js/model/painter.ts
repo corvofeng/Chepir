@@ -154,8 +154,6 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     // atTouchEnd: EventListener;
   ];
 
-  private width: number;
-  private height: number;
   private painter: Painter;
 
   private operations: Operation[];
@@ -177,11 +175,13 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
 
   public constructor(
     ctx: CanvasRenderingContext2D | null,
-    canvas: HTMLCanvasElement | null) {
+    canvas: HTMLCanvasElement | null,
+    width: number = 800,
+    height: number = 800,
+  ) {
 
-    super(ctx, canvas);
-    this.width = 800;
-    this.height = 800;
+    super(ctx, canvas, width, height);
+
     // this.background = Colors.WHITE;
     // this.config = new Config();
     this.painter = new Painter();
@@ -354,12 +354,6 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     Logger.debug(ev.targetTouches.length, "touch is canceled!");
   }
 
-  public getWidth(): number {
-    return this.width;
-  }
-  public getHeight(): number {
-    return this.height;
-  }
 }
 
 
