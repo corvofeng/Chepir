@@ -107,8 +107,6 @@ class ChepirBaseCanvas {
         this.context.restore();
     }
 
-
-
     /**
      * Canvas event's position is the absulate position from the whole
      * screen, not from current canvas, we must make some conversion.
@@ -122,6 +120,13 @@ class ChepirBaseCanvas {
             (x - rect.left) / (rect.right - rect.left) * this.canvas.width,
             (y - rect.top) / (rect.bottom - rect.top) * this.canvas.height,
         );
+    }
+
+    protected _getPressure(event: Touch): number {
+        if (event.force > 0) {
+            return event.force;
+        }
+        return 0;
     }
 
     protected _stroke(

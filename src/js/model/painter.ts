@@ -38,6 +38,7 @@ class Painter {
   private curColor: Colors;
   private curPos: Position;
   private curPressure: number;
+  private lineWidth: number;
   private painterIsDown: boolean;
 
   constructor() {
@@ -45,10 +46,19 @@ class Painter {
     this.curPos = new Position(0, 0);
     this.curPressure = 1.0;
     this.painterIsDown = false;
+    this.lineWidth = 1.0;
   }
   public printCurPosition() {
     Logger.info("Current in " + `(${this.curPos.x}, ${this.curPos.y})`);
     return;
+  }
+
+  /**
+   * You can make you own algorithm, please make pull request for
+   * this.
+   */
+  public getLineWidth() {
+    return this.curPressure * 30 * 0.2 + this.lineWidth * 0.8;
   }
 
   public setPainterIsDown(down: boolean) {
@@ -179,7 +189,6 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     width: number = 800,
     height: number = 800,
   ) {
-
     super(ctx, canvas, width, height);
 
     // this.background = Colors.WHITE;
@@ -223,8 +232,11 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     this.painter.setPainterIsDown(false);
     // this.painter.printCurPosition();
 
-    this._draw(lastPainterPos, curPainterPos,
-      this.painter.getCurColor(), this.painter.getCurPresure());
+    this._draw(
+      lastPainterPos,
+      curPainterPos,
+      this.painter.getCurColor(),
+      this.painter.getLineWidth());
 
     curOper.pushTrack(new Track(curPainterPos, width));
     Logger.debug("Painting is OVER!! And get line length: ",
@@ -245,8 +257,11 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
 
       this.painter.setPosition(curPainterPos);
 
-      this._draw(lastPainterPos, curPainterPos,
-        this.painter.getCurColor(), this.painter.getCurPresure(),
+      this._draw(
+        lastPainterPos,
+        curPainterPos,
+        this.painter.getCurColor(),
+        this.painter.getLineWidth(),
       );
 
       curOper.pushTrack(new Track(curPainterPos, width));
@@ -289,6 +304,8 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     for (let i = 0; i < length; i++) {
       const idx = ev.changedTouches[i].identifier;
       const curPainterPos = this._getPosition(ev.changedTouches[i]);
+      const pressure = this._getPressure(ev.changedTouches[i]);
+      this.painter.setCurPressure(pressure * 10);
 
       const operIdx: number | undefined = this.identifer2oper.get(idx);
       if (operIdx === undefined) {
@@ -302,8 +319,11 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
       const width = 0.1;
 
       if (curOper.getTrack().length > 2) {
-        this._draw(lastPainterPos, curPainterPos,
-          this.painter.getCurColor(), this.painter.getCurPresure(),
+        this._draw(
+          lastPainterPos,
+          curPainterPos,
+          this.painter.getCurColor(),
+          this.painter.getLineWidth(),
         );
       }
 
