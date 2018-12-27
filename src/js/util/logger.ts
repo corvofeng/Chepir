@@ -24,7 +24,7 @@ const myLogger: ILogger = jsLogger.get("Chepir");
 myLogger.setLevel(jsLogger.DEBUG);
 
 
-const defaultHandler =  jsLogger.createDefaultHandler()
+const defaultHandler = jsLogger.createDefaultHandler();
 
 function trans(messages: any[], context: IContext): void {
 
