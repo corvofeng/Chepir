@@ -7,6 +7,13 @@
 
 `React` + `Typescript` + `Canvas`.
 
+## Usage
+
+```bash
+> npm install
+> npm run dev
+```
+
 ## Some references:
 
 https://ourcodeworld.com/articles/read/117/top-5-best-sketchpads-and-manually-drawing-on-canvas-javascript-and-jquery-plugins
