@@ -10,10 +10,10 @@ const Logger = jsLogger.get("Chepir-Back");
 Logger.setLevel(jsLogger.DEBUG);
 jsLogger.setHandler((messages: any[], context: IContext) => {
     const msg: string = Array.prototype.slice.call(messages, 0)
-      .join(" ");
+        .join(" ");
 
     /* tslint:disable */
-    console.log(`[${context.level.name[0]}]`, msg); 
+    console.log(`[${context.level.name[0]}]`, msg);
     /* tslint:enable */
 });
 
@@ -41,7 +41,7 @@ const app = express();
 const server = http.createServer(app);
 
 // initialize the WebSocket server instance
-const wss = new WebSocket.Server({
+const wss: WebSocket.Server = new WebSocket.Server({
     server,
 });
 
@@ -62,6 +62,6 @@ wss.on("connection", (ws: WebSocket) => {
 
 // start our server
 server.listen(process.env.PORT || 8999, () => {
-    const port =  (server.address() as AddressInfo).port;
+    const port = (server.address() as AddressInfo).port;
     Logger.info(`Server started on port ${port} :)`);
 });

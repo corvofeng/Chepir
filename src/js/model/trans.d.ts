@@ -1,322 +1,313 @@
 import * as $protobuf from "protobufjs";
-/** Namespace model. */
-export namespace model {
+/** Namespace cheipr. */
+export namespace cheipr {
 
-    /** Properties of a Collection. */
-    interface ICollection {
+    /** Properties of an Operation. */
+    interface IOperation {
 
-        /** Collection id */
-        id?: (string|null);
+        /** Operation startPos */
+        startPos?: (cheipr.Operation.IPosition|null);
 
-        /** Collection name */
-        name?: (string|null);
+        /** Operation startTime */
+        startTime?: (number|Long|null);
 
-        /** Collection description */
-        description?: (string|null);
+        /** Operation isDraw */
+        isDraw?: (boolean|null);
 
-        /** Collection createdTsMicros */
-        createdTsMicros?: (number|Long|null);
+        /** Operation tracks */
+        tracks?: (cheipr.Operation.ITrack[]|null);
 
-        /** Collection subscriberIds */
-        subscriberIds?: (string[]|null);
-
-        /** Collection items */
-        items?: (string[]|null);
+        /** Operation uuid */
+        uuid?: (string|null);
     }
 
-    /** Represents a Collection. */
-    class Collection implements ICollection {
+    /** Represents an Operation. */
+    class Operation implements IOperation {
 
         /**
-         * Constructs a new Collection.
+         * Constructs a new Operation.
          * @param [properties] Properties to set
          */
-        constructor(properties?: model.ICollection);
+        constructor(properties?: cheipr.IOperation);
 
-        /** Collection id. */
-        public id: string;
+        /** Operation startPos. */
+        public startPos?: (cheipr.Operation.IPosition|null);
 
-        /** Collection name. */
-        public name: string;
+        /** Operation startTime. */
+        public startTime: (number|Long);
 
-        /** Collection description. */
-        public description: string;
+        /** Operation isDraw. */
+        public isDraw: boolean;
 
-        /** Collection createdTsMicros. */
-        public createdTsMicros: (number|Long);
+        /** Operation tracks. */
+        public tracks: cheipr.Operation.ITrack[];
 
-        /** Collection subscriberIds. */
-        public subscriberIds: string[];
-
-        /** Collection items. */
-        public items: string[];
+        /** Operation uuid. */
+        public uuid: string;
 
         /**
-         * Creates a new Collection instance using the specified properties.
+         * Creates a new Operation instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns Collection instance
+         * @returns Operation instance
          */
-        public static create(properties?: model.ICollection): model.Collection;
+        public static create(properties?: cheipr.IOperation): cheipr.Operation;
 
         /**
-         * Encodes the specified Collection message. Does not implicitly {@link model.Collection.verify|verify} messages.
-         * @param message Collection message or plain object to encode
+         * Encodes the specified Operation message. Does not implicitly {@link cheipr.Operation.verify|verify} messages.
+         * @param message Operation message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: model.ICollection, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: cheipr.IOperation, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified Collection message, length delimited. Does not implicitly {@link model.Collection.verify|verify} messages.
-         * @param message Collection message or plain object to encode
+         * Encodes the specified Operation message, length delimited. Does not implicitly {@link cheipr.Operation.verify|verify} messages.
+         * @param message Operation message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: model.ICollection, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: cheipr.IOperation, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a Collection message from the specified reader or buffer.
+         * Decodes an Operation message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns Collection
+         * @returns Operation
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): model.Collection;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): cheipr.Operation;
 
         /**
-         * Decodes a Collection message from the specified reader or buffer, length delimited.
+         * Decodes an Operation message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns Collection
+         * @returns Operation
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): model.Collection;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): cheipr.Operation;
 
         /**
-         * Verifies a Collection message.
+         * Verifies an Operation message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a Collection message from a plain object. Also converts values to their respective internal types.
+         * Creates an Operation message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns Collection
+         * @returns Operation
          */
-        public static fromObject(object: { [k: string]: any }): model.Collection;
+        public static fromObject(object: { [k: string]: any }): cheipr.Operation;
 
         /**
-         * Creates a plain object from a Collection message. Also converts values to other types if specified.
-         * @param message Collection
+         * Creates a plain object from an Operation message. Also converts values to other types if specified.
+         * @param message Operation
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: model.Collection, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: cheipr.Operation, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this Collection to JSON.
+         * Converts this Operation to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
     }
 
-    /** Properties of a User. */
-    interface IUser {
+    namespace Operation {
 
-        /** User id */
-        id?: (string|null);
-    }
+        /** Properties of a Position. */
+        interface IPosition {
 
-    /** Represents a User. */
-    class User implements IUser {
+            /** Position x */
+            x?: (number|Long|null);
 
-        /**
-         * Constructs a new User.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: model.IUser);
+            /** Position y */
+            y?: (number|Long|null);
+        }
 
-        /** User id. */
-        public id: string;
+        /** Represents a Position. */
+        class Position implements IPosition {
 
-        /**
-         * Creates a new User instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns User instance
-         */
-        public static create(properties?: model.IUser): model.User;
+            /**
+             * Constructs a new Position.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: cheipr.Operation.IPosition);
 
-        /**
-         * Encodes the specified User message. Does not implicitly {@link model.User.verify|verify} messages.
-         * @param message User message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: model.IUser, writer?: $protobuf.Writer): $protobuf.Writer;
+            /** Position x. */
+            public x: (number|Long);
 
-        /**
-         * Encodes the specified User message, length delimited. Does not implicitly {@link model.User.verify|verify} messages.
-         * @param message User message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: model.IUser, writer?: $protobuf.Writer): $protobuf.Writer;
+            /** Position y. */
+            public y: (number|Long);
 
-        /**
-         * Decodes a User message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns User
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): model.User;
+            /**
+             * Creates a new Position instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Position instance
+             */
+            public static create(properties?: cheipr.Operation.IPosition): cheipr.Operation.Position;
 
-        /**
-         * Decodes a User message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns User
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): model.User;
+            /**
+             * Encodes the specified Position message. Does not implicitly {@link cheipr.Operation.Position.verify|verify} messages.
+             * @param message Position message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: cheipr.Operation.IPosition, writer?: $protobuf.Writer): $protobuf.Writer;
 
-        /**
-         * Verifies a User message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
+            /**
+             * Encodes the specified Position message, length delimited. Does not implicitly {@link cheipr.Operation.Position.verify|verify} messages.
+             * @param message Position message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: cheipr.Operation.IPosition, writer?: $protobuf.Writer): $protobuf.Writer;
 
-        /**
-         * Creates a User message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns User
-         */
-        public static fromObject(object: { [k: string]: any }): model.User;
+            /**
+             * Decodes a Position message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Position
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): cheipr.Operation.Position;
 
-        /**
-         * Creates a plain object from a User message. Also converts values to other types if specified.
-         * @param message User
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: model.User, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            /**
+             * Decodes a Position message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Position
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): cheipr.Operation.Position;
 
-        /**
-         * Converts this User to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
+            /**
+             * Verifies a Position message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
 
-    /** Properties of an Item. */
-    interface IItem {
+            /**
+             * Creates a Position message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Position
+             */
+            public static fromObject(object: { [k: string]: any }): cheipr.Operation.Position;
 
-        /** Item id */
-        id?: (string|null);
+            /**
+             * Creates a plain object from a Position message. Also converts values to other types if specified.
+             * @param message Position
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: cheipr.Operation.Position, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
-        /** Item url */
-        url?: (string|null);
+            /**
+             * Converts this Position to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
 
-        /** Item createdTsMicros */
-        createdTsMicros?: (number|Long|null);
+        /** Properties of a Track. */
+        interface ITrack {
 
-        /** Item authorId */
-        authorId?: (string|null);
-    }
+            /** Track pos */
+            pos?: (cheipr.Operation.IPosition|null);
 
-    /** Represents an Item. */
-    class Item implements IItem {
+            /** Track width */
+            width?: (number|Long|null);
+        }
 
-        /**
-         * Constructs a new Item.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: model.IItem);
+        /** Represents a Track. */
+        class Track implements ITrack {
 
-        /** Item id. */
-        public id: string;
+            /**
+             * Constructs a new Track.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: cheipr.Operation.ITrack);
 
-        /** Item url. */
-        public url: string;
+            /** Track pos. */
+            public pos?: (cheipr.Operation.IPosition|null);
 
-        /** Item createdTsMicros. */
-        public createdTsMicros: (number|Long);
+            /** Track width. */
+            public width: (number|Long);
 
-        /** Item authorId. */
-        public authorId: string;
+            /**
+             * Creates a new Track instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Track instance
+             */
+            public static create(properties?: cheipr.Operation.ITrack): cheipr.Operation.Track;
 
-        /**
-         * Creates a new Item instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Item instance
-         */
-        public static create(properties?: model.IItem): model.Item;
+            /**
+             * Encodes the specified Track message. Does not implicitly {@link cheipr.Operation.Track.verify|verify} messages.
+             * @param message Track message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: cheipr.Operation.ITrack, writer?: $protobuf.Writer): $protobuf.Writer;
 
-        /**
-         * Encodes the specified Item message. Does not implicitly {@link model.Item.verify|verify} messages.
-         * @param message Item message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: model.IItem, writer?: $protobuf.Writer): $protobuf.Writer;
+            /**
+             * Encodes the specified Track message, length delimited. Does not implicitly {@link cheipr.Operation.Track.verify|verify} messages.
+             * @param message Track message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: cheipr.Operation.ITrack, writer?: $protobuf.Writer): $protobuf.Writer;
 
-        /**
-         * Encodes the specified Item message, length delimited. Does not implicitly {@link model.Item.verify|verify} messages.
-         * @param message Item message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: model.IItem, writer?: $protobuf.Writer): $protobuf.Writer;
+            /**
+             * Decodes a Track message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Track
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): cheipr.Operation.Track;
 
-        /**
-         * Decodes an Item message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Item
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): model.Item;
+            /**
+             * Decodes a Track message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Track
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): cheipr.Operation.Track;
 
-        /**
-         * Decodes an Item message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Item
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): model.Item;
+            /**
+             * Verifies a Track message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
 
-        /**
-         * Verifies an Item message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
+            /**
+             * Creates a Track message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Track
+             */
+            public static fromObject(object: { [k: string]: any }): cheipr.Operation.Track;
 
-        /**
-         * Creates an Item message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Item
-         */
-        public static fromObject(object: { [k: string]: any }): model.Item;
+            /**
+             * Creates a plain object from a Track message. Also converts values to other types if specified.
+             * @param message Track
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: cheipr.Operation.Track, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
-        /**
-         * Creates a plain object from an Item message. Also converts values to other types if specified.
-         * @param message Item
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: model.Item, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Item to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
+            /**
+             * Converts this Track to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
     }
 }

@@ -11,16 +11,18 @@
  *=======================================================================
  */
 
-import { model } from "../model/trans";
-
+import { cheipr } from "./trans";
 
 /**
  * This is the interface for serialize object, object should implements it to
  * enable transfer.
- *
  */
 interface ISerialize {
-  encode(): void;
+  encode(): any;
   decode(): void;
 }
 
+export {
+  ISerialize,
+  cheipr as model,
+};
