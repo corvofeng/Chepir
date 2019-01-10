@@ -1,4 +1,6 @@
 dist
+src/js/model/trans.js
+src/js/model/trans.d.ts
 
 #### joe made this: http://goel.io/joe
 
