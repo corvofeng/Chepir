@@ -4,6 +4,6 @@ node_js:
 before_script:
   - npm install
 script:
-    npm run gen_ts
-    npm run gen_server
-    npm run build
+  - npm run gen_ts
+  - npm run gen_server
+  - npm run build
