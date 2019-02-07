@@ -63,6 +63,9 @@ class Operation implements ISerialize {
   }
 
   public encode(): any[] {
+    // We can't encode data twice, but we can encode any time we want.
+    // it will record the data shift, and next we want encode, it
+    // will start from the last position.
     const ops: model.Operation[] = [];
     if (this.transPosition === 0) {
       const op = model.Operation.create();
@@ -73,18 +76,24 @@ class Operation implements ISerialize {
       this.transPosition += 1;
     }
 
-    for (let i = this.transPosition; i < this.tracks.length; i++) {
-      const op = new model.Operation();
+    // beacuse the tracks will be pushed, we need store current
+    // length for trans.
+    const curLenght = this.tracks.length;
+    for (let i = this.transPosition; i < curLenght; i++) {
+      const op = model.Operation.create();
       op.isDraw = this.isDraw;
       const track = this.tracks[i];
       op.tracks.push({ pos: track.pos, width: track.width });
-
+      op.uuid = this.uuid;
+      this.transPosition += 1;
       ops.push(op);
     }
+
     return ops;
   }
 
-  public decode() {
+  public decode(data: model.Operation[]) {
+
     return;
   }
 }

@@ -19,7 +19,7 @@ import { cheipr } from "./trans";
  */
 interface ISerialize {
   encode(): any;
-  decode(): void;
+  decode(data: any): void;
 }
 
 export {
