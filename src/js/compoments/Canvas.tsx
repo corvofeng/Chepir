@@ -6,15 +6,25 @@ import { ChepirCanvas, RegisterPaintEvent, DeRegisterPaintEvent } from "../model
 export class CanvasComponent extends React.Component {
   private element: HTMLDivElement | null;
   private chepirCanvas: ChepirCanvas | null;
+  private interval: number;
+  private intervalTime : number;
 
   public constructor(props: any) {
     super(props);
     this.chepirCanvas = null;
     this.element = null;
+    this.interval = -1;
+    this.intervalTime = 1000;
   }
 
   public componentDidMount() {
     this.updateCanvas();
+
+    this.interval = window.setInterval(this.timer, this.intervalTime)
+  }
+
+  public timer() {
+    Logger.info("In canvas timer");
   }
 
   public updateCanvas() {
@@ -32,10 +42,6 @@ export class CanvasComponent extends React.Component {
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height);
-    // canvas.width = 800;
-    // canvas.height = 800;
-    // this.chepirCanvas.setContext(ctx);
-    // this.chepirCanvas.setCanvas(canvas);
     RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
 
     // Every time the div changed, call updateDimensions
@@ -44,6 +50,8 @@ export class CanvasComponent extends React.Component {
   }
 
   public componentWillUnmount() {
+    window.clearInterval(this.interval);
+
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
     if (this.chepirCanvas) {
       DeRegisterPaintEvent(canvasHTML, this.chepirCanvas);
