@@ -1,5 +1,7 @@
 # Chepir
 
+[![Build Status](https://travis-ci.com/corvofeng/Chepir.svg?branch=master)](https://travis-ci.com/corvofeng/Chepir)
+
 
 ## Preview
 
