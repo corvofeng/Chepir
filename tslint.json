@@ -14,6 +14,11 @@
       "options": [120]
     }
   },
+  "linterOptions": {
+      "exclude": [
+          "src/js/model/trans.*"
+      ]
+  },
   "jsRules": {
     "indent": [
       "error",

@@ -1,9 +1,13 @@
 language: node_js
 node_js:
   - "7"
+  - "10"
+
 before_script:
   - npm install
+
 script:
+  - npm run ts_check
   - npm run gen_ts
   - npm run gen_server
   - npm run build

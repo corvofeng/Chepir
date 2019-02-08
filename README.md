@@ -14,7 +14,11 @@
 ```bash
 > npm install
 > npm run dev
+> # before pull request, please run tslint.
+> npm run ts_check
 ```
+
+
 
 ## Some references:
 
