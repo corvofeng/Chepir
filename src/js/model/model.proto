@@ -26,8 +26,8 @@ message Operation {
     int64 y = 2;
   }
   message Track {
-      Position pos = 1;
-      int64 width = 2;
+    Position pos = 1;
+    int64 width = 2;
   }
   Position startPos = 1;
   int64 startTime = 2;
@@ -35,3 +35,6 @@ message Operation {
   repeated Track tracks = 4;
   string uuid = 5;
 }
+
+// TODO: We also need to transfer some data to fit the width and height
+// of the canvas, as well as some instructions.

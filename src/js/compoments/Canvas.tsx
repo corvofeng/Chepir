@@ -7,7 +7,7 @@ export class CanvasComponent extends React.Component {
   private element: HTMLDivElement | null;
   private chepirCanvas: ChepirCanvas | null;
   private interval: number;
-  private intervalTime : number;
+  private intervalTime: number;
 
   public constructor(props: any) {
     super(props);
@@ -20,11 +20,11 @@ export class CanvasComponent extends React.Component {
   public componentDidMount() {
     this.updateCanvas();
 
-    this.interval = window.setInterval(this.timer, this.intervalTime)
+    this.interval = window.setInterval(this.timer, this.intervalTime);
   }
 
   public timer() {
-    Logger.info("In canvas timer");
+    Logger.debug("In canvas timer");
   }
 
   public updateCanvas() {

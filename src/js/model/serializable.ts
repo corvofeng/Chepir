@@ -22,7 +22,16 @@ interface ISerialize {
   decode(data: any): void;
 }
 
+/**
+ * For object who will transfer the data.
+ */
+interface ITransfer {
+  send(data: any): Promise<void>;
+  receive(): Promise<any>;
+}
+
 export {
   ISerialize,
+  ITransfer,
   cheipr as model,
 };

@@ -62,37 +62,48 @@ class Operation implements ISerialize {
     return this.tracks;
   }
 
-  public encode(): any[] {
+  public encode(): any {
     // We can't encode data twice, but we can encode any time we want.
     // it will record the data shift, and next we want encode, it
     // will start from the last position.
-    const ops: model.Operation[] = [];
+    // const ops: model.Operation[] = [];
+    const op = model.Operation.create();
     if (this.transPosition === 0) {
-      const op = model.Operation.create();
       op.startPos = this.startPos;
       op.isDraw = this.isDraw;
       op.uuid = this.uuid;
-      ops.push(op);
       this.transPosition += 1;
     }
+
+    op.uuid = this.uuid;
+    op.isDraw = this.isDraw;
 
     // beacuse the tracks will be pushed, we need store current
     // length for trans.
     const curLenght = this.tracks.length;
     for (let i = this.transPosition; i < curLenght; i++) {
-      const op = model.Operation.create();
-      op.isDraw = this.isDraw;
+      const tTrack = model.Operation.Track.create();
       const track = this.tracks[i];
-      op.tracks.push({ pos: track.pos, width: track.width });
-      op.uuid = this.uuid;
+      tTrack.pos = track.pos;
+      tTrack.width = track.width;
+      op.tracks.push(tTrack);
       this.transPosition += 1;
-      ops.push(op);
     }
 
-    return ops;
+    return op;
   }
 
-  public decode(data: model.Operation[]) {
+  public decode(data: model.Operation) {
+    if (data.uuid !== this.uuid) {
+      this.uuid = data.uuid;
+      this.startPos = data.startPos as Position;
+      this.isDraw = data.isDraw;
+    }
+
+    data.tracks.forEach((t: model.Operation.ITrack) => {
+      this.tracks.push(
+        new Track(t.pos as Position, t.width as number));
+    });
 
     return;
   }

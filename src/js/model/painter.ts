@@ -87,12 +87,6 @@ class Painter {
   }
 }
 
-class Config {
-
-  public construct() {
-    return;
-  }
-}
 interface IChepirevents extends EventListenerObject {
   getAllEvents(): string[];
 }
@@ -103,11 +97,9 @@ interface IPainterEvent extends IChepirevents {
   atMouseUpORLeave: EventListener;
   atMouseMove: EventListener;
 
-  // atTouchStart: EventListener;
-  // atTouchMove: EventListener;
-  // atTouchLeave: EventListener;
-  // atTouchEnd: EventListener;
-
+  atTouchStart: EventListener;
+  atTouchMove: EventListener;
+  atTouchEnd: EventListener;
 }
 
 /**
@@ -148,7 +140,9 @@ function DeRegisterPaintEvent(
   return RegisterPaintEvent(htmlElement, painterEvent, false);
 }
 
-class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListenerObject {
+class ChepirCanvas extends ChepirBaseCanvas
+  implements IPainterEvent, EventListenerObject {
+
   protected eventMaps: Array<[string, string]> = [
     // Mocse event.
     ["mousedown", "atMouseDown"],
@@ -161,7 +155,6 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     ["touchmove", "atTouchMove"],
     ["touchend", "atTouchEnd"],
     ["touchcancel", "atTouchCancel"],
-    // atTouchEnd: EventListener;
   ];
 
   private painter: Painter;
@@ -282,7 +275,8 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
    */
 
 
-  public atTouchStart(ev: TouchEvent) {
+  public atTouchStart(evt: Event) {
+    const ev = evt as TouchEvent;
     const length: number = ev.changedTouches.length;
     for (let i = 0; i < length; i++) {
       const idx = ev.changedTouches[i].identifier;
@@ -298,7 +292,8 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     return;
   }
 
-  public atTouchMove(ev: TouchEvent) {
+  public atTouchMove(evt: Event) {
+    const ev = evt as TouchEvent;
     Logger.debug("At touch moves");
     const length: number = ev.changedTouches.length;
     for (let i = 0; i < length; i++) {
@@ -333,7 +328,8 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     return;
   }
 
-  public atTouchEnd(ev: TouchEvent) {
+  public atTouchEnd(evt: Event) {
+    const ev = evt as TouchEvent;
     const length = ev.changedTouches.length;
     for (let i = 0; i < length; i++) {
       const idx = ev.changedTouches[i].identifier;
@@ -370,7 +366,9 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent, EventListe
     return;
 
   }
-  public atTouchCancel(ev: TouchEvent) {
+
+  public atTouchCancel(evt: Event) {
+    const ev = evt as TouchEvent;
     Logger.debug(ev.targetTouches.length, "touch is canceled!");
   }
 
