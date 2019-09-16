@@ -15,6 +15,7 @@ import { Logger } from "../util/logger";
 import { Assert } from "../util/util";
 import { ChepirBaseCanvas } from "./chepir_base_canvas";
 import { Operation, Track } from "./operation";
+import { OpTrans } from "./serializable";
 
 enum Colors {
   WHITE = 1,
@@ -165,6 +166,8 @@ class ChepirCanvas extends ChepirBaseCanvas
   // private points: Position[];
   // private touchOperations;
 
+  private opTrans: OpTrans;
+
   /**
    * Every touch event has an identifer, and in the `touchevent`
    * argument, there are many `Touch` objects, the only way
@@ -190,6 +193,7 @@ class ChepirCanvas extends ChepirBaseCanvas
     // this.points = [];
     this.operations = [];
     this.identifer2oper = new Map();
+    this.opTrans = new OpTrans();
   }
 
   public atMouseDown(ev: Event): void {
@@ -232,6 +236,7 @@ class ChepirCanvas extends ChepirBaseCanvas
       this.painter.getLineWidth());
 
     curOper.pushTrack(new Track(curPainterPos, width));
+    curOper.onFinish();
     Logger.debug("Painting is OVER!! And get line length: ",
       curOper.getTrack().length);
 
@@ -359,7 +364,7 @@ class ChepirCanvas extends ChepirBaseCanvas
       Logger.debug("Painting is OVER!! And get line length: ",
         curOper.getTrack().length,
       );
-
+      curOper.onFinish();
       this.identifer2oper.delete(idx);
       Logger.debug("idx ", idx, " ended!");
     }

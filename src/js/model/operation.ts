@@ -12,8 +12,9 @@
  */
 
 import { Position } from "./painter";
-import { ISerialize, model } from "./serializable";
+import { ISerialize, model, ITransfer } from "./serializable";
 import { guid } from "../util/util";
+import { Logger } from "../util/logger";
 
 class Track {
   public pos: Position;
@@ -33,11 +34,13 @@ class Operation implements ISerialize {
 
   private startPos: Position;
   private startTime: Date;
-  private isDraw: boolean;
+  private isDraw: boolean;  // draw or erase
   private tracks: Track[];
   private uuid: string;
+  private isOver: boolean;
   // record current operation trans position
   private transPosition: number;
+  // private transObj: ITransfer;
 
   constructor(pos: Position) {
     this.startPos = pos;
@@ -46,10 +49,18 @@ class Operation implements ISerialize {
     this.tracks = [];
     this.transPosition = 0;
     this.uuid = guid();
+    this.isOver = false;
+    // this.transObj = undefined as ITransfer;
   }
 
   public pushTrack(track: Track) {
     this.tracks.push(track);
+  }
+
+  public async onFinish() { // Mark this operation is over.
+    this.isOver = true;
+    Logger.info("This paint is over");
+    Logger.info(this.encode());
   }
 
   public getLastPosition(): Position {
@@ -89,8 +100,9 @@ class Operation implements ISerialize {
       op.tracks.push(tTrack);
       this.transPosition += 1;
     }
-
-    return op;
+    return model.Operation.encode(op);
+    // op.toObject();
+    // return op;
   }
 
   public decode(data: model.Operation) {

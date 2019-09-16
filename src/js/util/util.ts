@@ -1,4 +1,3 @@
-
 function Assert(b: boolean) {
   if (!b) {
     throw new Error("Assert Error");
@@ -15,4 +14,9 @@ function guid() {
   return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
 }
 
-export { Assert, guid };
+function isMochaRunning(): boolean {
+  // console.log(process.env);
+  return typeof global.it === "function";
+}
+
+export { Assert, guid, isMochaRunning };
