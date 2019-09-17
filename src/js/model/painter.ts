@@ -16,6 +16,7 @@ import { Assert } from "../util/util";
 import { ChepirBaseCanvas } from "./chepir_base_canvas";
 import { Operation, Track } from "./operation";
 import { OpTrans } from "./serializable";
+import { timingSafeEqual } from "crypto";
 
 enum Colors {
   WHITE = 1,
@@ -194,6 +195,7 @@ class ChepirCanvas extends ChepirBaseCanvas
     this.operations = [];
     this.identifer2oper = new Map();
     this.opTrans = new OpTrans();
+    this.opTrans.setUp();
   }
 
   public atMouseDown(ev: Event): void {
@@ -202,7 +204,7 @@ class ChepirCanvas extends ChepirBaseCanvas
     this.painter.setPosition(this._getPosition(e));
     this.painter.setPainterIsDown(true);
 
-    this.operations.push(new Operation(this.painter.getCurPos()));
+    this.operations.push(new Operation(this.painter.getCurPos(), this.opTrans));
     this.operCnt++;
     return;
   }
@@ -286,7 +288,7 @@ class ChepirCanvas extends ChepirBaseCanvas
     for (let i = 0; i < length; i++) {
       const idx = ev.changedTouches[i].identifier;
       const curPainterPos = this._getPosition(ev.changedTouches[i]);
-      this.operations.push(new Operation(this.painter.getCurPos()));
+      this.operations.push(new Operation(this.painter.getCurPos(), this.opTrans));
       this.operCnt++;
 
       this.identifer2oper.set(idx, this.operCnt);

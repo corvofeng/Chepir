@@ -31,18 +31,17 @@ class Track {
  * start point with many points folows it.
  */
 class Operation implements ISerialize {
-
   private startPos: Position;
   private startTime: Date;
-  private isDraw: boolean;  // draw or erase
+  private isDraw: boolean; // draw or erase
   private tracks: Track[];
   private uuid: string;
   private isOver: boolean;
   // record current operation trans position
   private transPosition: number;
-  // private transObj: ITransfer;
+  private transObj: ITransfer|undefined;
 
-  constructor(pos: Position) {
+  constructor(pos: Position, transObj?: ITransfer) {
     this.startPos = pos;
     this.startTime = new Date();
     this.isDraw = true;
@@ -50,6 +49,7 @@ class Operation implements ISerialize {
     this.transPosition = 0;
     this.uuid = guid();
     this.isOver = false;
+    this.transObj = transObj;
     // this.transObj = undefined as ITransfer;
   }
 
@@ -57,10 +57,14 @@ class Operation implements ISerialize {
     this.tracks.push(track);
   }
 
-  public async onFinish() { // Mark this operation is over.
+  public async onFinish() {
+    // Mark this operation is over.
     this.isOver = true;
     Logger.info("This paint is over");
-    Logger.info(this.encode());
+    if (this.transObj) {
+      this.transObj.send(this.encode());
+    }
+    // Logger.info(this.encode());
   }
 
   public getLastPosition(): Position {
@@ -73,7 +77,7 @@ class Operation implements ISerialize {
     return this.tracks;
   }
 
-  public encode(): any {
+  public encode(): Uint8Array {
     // We can't encode data twice, but we can encode any time we want.
     // it will record the data shift, and next we want encode, it
     // will start from the last position.
@@ -100,12 +104,21 @@ class Operation implements ISerialize {
       op.tracks.push(tTrack);
       this.transPosition += 1;
     }
-    return model.Operation.encode(op);
-    // op.toObject();
-    // return op;
+    return model.Operation.encode(op).finish();
   }
 
-  public decode(data: model.Operation) {
+  public decode(enData: Uint8Array) {
+    let data: model.Operation | undefined;
+    try {
+      data = model.Operation.decode(enData) as model.Operation;
+    } catch (error) {
+      Logger.error("decode ", enData, "with error: ", error);
+    }
+    if (data === undefined) {
+      Logger.warn("Can't get data from ", enData);
+      return;
+    }
+
     if (data.uuid !== this.uuid) {
       this.uuid = data.uuid;
       this.startPos = data.startPos as Position;
@@ -113,8 +126,7 @@ class Operation implements ISerialize {
     }
 
     data.tracks.forEach((t: model.Operation.ITrack) => {
-      this.tracks.push(
-        new Track(t.pos as Position, t.width as number));
+      this.tracks.push(new Track(t.pos as Position, t.width as number));
     });
 
     return;
