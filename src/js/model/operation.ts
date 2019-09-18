@@ -31,16 +31,10 @@ class Track {
  * start point with many points folows it.
  */
 class Operation implements ISerialize {
-
-  public static decode(enData: Uint8Array, orgObj?: Operation): Operation {
-    if (orgObj) {
-      orgObj._decode(enData, orgObj);
-      return orgObj;
-    } else {
-      const op = new Operation(new Position(-1, -1));
-      op._decode(enData);
-      return op;
-    }
+  public static decode(enData: Uint8Array): Operation {
+    const op = new Operation(new Position(-1, -1));
+    op._decode(enData);
+    return op;
   }
 
   private startPos: Position;
@@ -72,10 +66,18 @@ class Operation implements ISerialize {
     // Mark this operation is over.
     this.isOver = true;
     Logger.info("This paint is over");
-    if (this.transObj) {
-      this.transObj.send(this.encode());
+    if (this.transObj && this.transObj.canRW()) {
+      while (true) {
+        const data = this.encode();
+        if (data) {
+          this.transObj.send(data);
+        } else {
+          break;
+        }
+      }
+    } else {
+      Logger.warn("Current websocket not work");
     }
-    // Logger.info(this.encode());
   }
 
   public getLastPosition(): Position {
@@ -88,11 +90,23 @@ class Operation implements ISerialize {
     return this.tracks;
   }
 
-  public encode(): Uint8Array {
+  public encode(): Uint8Array | undefined {
     // We can't encode data twice, but we can encode any time we want.
     // it will record the data shift, and next we want encode, it
     // will start from the last position.
     // const ops: model.Operation[] = [];
+    // return model.Operation.encode(op).finish();
+    while (true) {
+      const data = this.iter();
+      if (data !== undefined) {
+        return model.Operation.encode(data).finish();
+      } else {
+        break;
+      }
+    }
+    return undefined;
+  }
+  public iter(maxLen: number = 10): model.Operation | undefined {
     const op = model.Operation.create();
     if (this.transPosition === 0) {
       op.startPos = this.startPos;
@@ -104,10 +118,8 @@ class Operation implements ISerialize {
     op.uuid = this.uuid;
     op.isDraw = this.isDraw;
 
-    // beacuse the tracks will be pushed, we need store current
-    // length for trans.
-    const curLenght = this.tracks.length;
-    for (let i = this.transPosition; i < curLenght; i++) {
+    const itStart = this.transPosition;
+    for (let i = itStart; i < itStart + maxLen && i < this.tracks.length; i++) {
       const tTrack = model.Operation.Track.create();
       const track = this.tracks[i];
       tTrack.pos = track.pos;
@@ -115,14 +127,32 @@ class Operation implements ISerialize {
       op.tracks.push(tTrack);
       this.transPosition += 1;
     }
-    return model.Operation.encode(op).finish();
+    if (op.tracks.length === 0) {
+      return undefined;
+    }
+    return op;
+  }
+
+  public merge(obj: Operation): void {
+    /**
+     * If the origin operation is exist, this enData is a section
+     * belong to this operation, so we only make an uuid check
+     * and push new position data.
+     *
+     * TODO: the sections may be disorder, we need to resort the section.
+     */
+    Assert(obj.uuid === this.uuid);
+    obj.tracks.forEach((t: model.Operation.ITrack) => {
+      this.tracks.push(new Track(t.pos as Position, t.width as number));
+    });
+    return;
   }
 
   /**
    * This function should not exist, please refer to `ISerialize`
    * Don't call this function directly.
    */
-  public _decode(enData: Uint8Array, orgObj?: Operation) {
+  public _decode(enData: Uint8Array) {
     let data: model.Operation | undefined;
     try {
       data = model.Operation.decode(enData) as model.Operation;
@@ -133,26 +163,18 @@ class Operation implements ISerialize {
       Logger.warn("Can't get data from ", enData);
       return;
     }
-
-    /**
-     * If the origin operation is exist, this enData is a section
-     * belong to this operation, so we only make an uuid check
-     * and push new position data.
-     *
-     * TODO: the sections may be disorder, we need to resort the section.
-     */
-    if (orgObj) {
-      Assert(orgObj.uuid === data.uuid);
-    } else {
-      this.uuid = data.uuid;
-      this.startPos = data.startPos as Position;
-      this.isDraw = data.isDraw;
-    }
+    this.uuid = data.uuid;
+    this.startPos = data.startPos as Position;
+    this.isDraw = data.isDraw;
 
     data.tracks.forEach((t: model.Operation.ITrack) => {
       this.tracks.push(new Track(t.pos as Position, t.width as number));
     });
     return;
+  }
+
+  public getUUID(): string {
+    return this.uuid;
   }
 }
 
