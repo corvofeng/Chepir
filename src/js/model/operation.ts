@@ -13,7 +13,7 @@
 
 import { Position } from "./painter";
 import { ISerialize, model, ITransfer } from "./serializable";
-import { guid } from "../util/util";
+import { guid, Assert } from "../util/util";
 import { Logger } from "../util/logger";
 
 class Track {
@@ -31,6 +31,18 @@ class Track {
  * start point with many points folows it.
  */
 class Operation implements ISerialize {
+
+  public static decode(enData: Uint8Array, orgObj?: Operation): Operation {
+    if (orgObj) {
+      orgObj._decode(enData, orgObj);
+      return orgObj;
+    } else {
+      const op = new Operation(new Position(-1, -1));
+      op._decode(enData);
+      return op;
+    }
+  }
+
   private startPos: Position;
   private startTime: Date;
   private isDraw: boolean; // draw or erase
@@ -39,7 +51,7 @@ class Operation implements ISerialize {
   private isOver: boolean;
   // record current operation trans position
   private transPosition: number;
-  private transObj: ITransfer|undefined;
+  private transObj: ITransfer | undefined;
 
   constructor(pos: Position, transObj?: ITransfer) {
     this.startPos = pos;
@@ -50,7 +62,6 @@ class Operation implements ISerialize {
     this.uuid = guid();
     this.isOver = false;
     this.transObj = transObj;
-    // this.transObj = undefined as ITransfer;
   }
 
   public pushTrack(track: Track) {
@@ -107,7 +118,11 @@ class Operation implements ISerialize {
     return model.Operation.encode(op).finish();
   }
 
-  public decode(enData: Uint8Array) {
+  /**
+   * This function should not exist, please refer to `ISerialize`
+   * Don't call this function directly.
+   */
+  public _decode(enData: Uint8Array, orgObj?: Operation) {
     let data: model.Operation | undefined;
     try {
       data = model.Operation.decode(enData) as model.Operation;
@@ -119,7 +134,16 @@ class Operation implements ISerialize {
       return;
     }
 
-    if (data.uuid !== this.uuid) {
+    /**
+     * If the origin operation is exist, this enData is a section
+     * belong to this operation, so we only make an uuid check
+     * and push new position data.
+     *
+     * TODO: the sections may be disorder, we need to resort the section.
+     */
+    if (orgObj) {
+      Assert(orgObj.uuid === data.uuid);
+    } else {
       this.uuid = data.uuid;
       this.startPos = data.startPos as Position;
       this.isDraw = data.isDraw;
@@ -128,7 +152,6 @@ class Operation implements ISerialize {
     data.tracks.forEach((t: model.Operation.ITrack) => {
       this.tracks.push(new Track(t.pos as Position, t.width as number));
     });
-
     return;
   }
 }

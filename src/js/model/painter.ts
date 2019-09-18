@@ -184,11 +184,11 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     this.readOnly = false;
   }
   public async readFromTrans() {
-    while(this.readOnly) {
-      // let data = await this.opTrans.receive();
+    while (this.readOnly) {
+      const enData = await this.opTrans.receive();
+      Operation.decode(enData);
     }
   }
-
 
   /* ----------------------- evt process ------------------------- */
 
