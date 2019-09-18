@@ -13,7 +13,7 @@
 
 import { Logger } from "../util/logger";
 import { Assert } from "../util/util";
-import { ChepirBaseCanvas } from "./chepir_base_canvas";
+import { ChepirBaseCanvas, IChepirevents, IPainterEvent } from "./chepir_base_canvas";
 import { Operation, Track } from "./operation";
 import { OpTrans } from "./serializable";
 import { timingSafeEqual } from "crypto";
@@ -89,21 +89,6 @@ class Painter {
   }
 }
 
-interface IChepirevents extends EventListenerObject {
-  getAllEvents(): string[];
-}
-
-
-interface IPainterEvent extends IChepirevents {
-  atMouseDown: EventListener;
-  atMouseUpORLeave: EventListener;
-  atMouseMove: EventListener;
-
-  atTouchStart: EventListener;
-  atTouchMove: EventListener;
-  atTouchEnd: EventListener;
-}
-
 /**
  *
  * @param htmlElement canvas对象
@@ -142,8 +127,7 @@ function DeRegisterPaintEvent(
   return RegisterPaintEvent(htmlElement, painterEvent, false);
 }
 
-class ChepirCanvas extends ChepirBaseCanvas
-  implements IPainterEvent, EventListenerObject {
+class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
 
   protected eventMaps: Array<[string, string]> = [
     // Mocse event.
@@ -168,6 +152,7 @@ class ChepirCanvas extends ChepirBaseCanvas
   // private touchOperations;
 
   private opTrans: OpTrans;
+  private readOnly: boolean;
 
   /**
    * Every touch event has an identifer, and in the `touchevent`
@@ -196,7 +181,16 @@ class ChepirCanvas extends ChepirBaseCanvas
     this.identifer2oper = new Map();
     this.opTrans = new OpTrans();
     this.opTrans.setUp();
+    this.readOnly = false;
   }
+  public async readFromTrans() {
+    while(this.readOnly) {
+      // let data = await this.opTrans.receive();
+    }
+  }
+
+
+  /* ----------------------- evt process ------------------------- */
 
   public atMouseDown(ev: Event): void {
     Logger.info("At mouse down");

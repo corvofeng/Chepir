@@ -15,13 +15,27 @@ import { Position, Colors } from "./painter";
 import { Assert } from "../util/util";
 import { Logger } from "../util/logger";
 
+interface IChepirevents extends EventListenerObject {
+    getAllEvents(): string[];
+}
+
+interface IPainterEvent extends IChepirevents {
+    atMouseDown: EventListener;
+    atMouseUpORLeave: EventListener;
+    atMouseMove: EventListener;
+
+    atTouchStart: EventListener;
+    atTouchMove: EventListener;
+    atTouchEnd: EventListener;
+}
+
 
 /**
  * An Canvas need to have canvas element, and context, but a specific
  * class should not know anything about the canvas. there is only
  * thing the need to know, they can draw.
  */
-class ChepirBaseCanvas {
+class ChepirBaseCanvas implements EventListenerObject {
     /**
      * A an tuple for events map, every use this as a base
      * class, then eventMaps musted by covered. Or you will failed
@@ -129,6 +143,14 @@ class ChepirBaseCanvas {
         return 0;
     }
 
+    /**
+     * TODO: Add more sytle
+     * @param start
+     * @param end
+     * @param color
+     * @param size
+     * @param compositeOperation
+     */
     protected _stroke(
         start: Position,
         end: Position,
@@ -168,10 +190,10 @@ class ChepirBaseCanvas {
     ) {
         this._stroke(start, end, color, size, "destination-out");
     }
-
-
-
-
 }
 
-export { ChepirBaseCanvas };
+export {
+    ChepirBaseCanvas,
+    IChepirevents,
+    IPainterEvent,
+};
