@@ -43,7 +43,7 @@ export class CanvasComponent extends React.Component {
 
     this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height);
     RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
-
+    await this.chepirCanvas.readFromTrans();
     // Every time the div changed, call updateDimensions
     // window.addEventListener("resize", this);
 

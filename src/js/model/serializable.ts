@@ -20,7 +20,7 @@ import { delay } from "../util/util";
  * enable transfer.
  */
 interface ISerialize {
-  encode(): Uint8Array;
+  encode(): Uint8Array | undefined;
 
   /**
    * TODO: The interface should have `static decode` fucntion
@@ -29,7 +29,10 @@ interface ISerialize {
    * https://github.com/Microsoft/TypeScript/issues/13462
    * https://github.com/microsoft/TypeScript/issues/14600
    */
-  /* static */ _decode(data: Uint8Array, orgObj?: any): any;
+  /* static */ _decode(data: Uint8Array): any;
+
+  iter(maxLen?: number): any;
+  merge(obj: any): void;
 }
 /**
  * For object who will transfer the data.
@@ -37,6 +40,7 @@ interface ISerialize {
 interface ITransfer {
   send(data: any): void;
   receive(): any;
+  canRW(): boolean;
 }
 
 class OpTrans implements ITransfer {
@@ -51,7 +55,7 @@ class OpTrans implements ITransfer {
     this.receiveBuff = [];
   }
   public async setUp() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.ws = new WebSocket(this.wsUri);
       this.ws.binaryType = "arraybuffer";
       if (this.ws === undefined) {
@@ -71,6 +75,17 @@ class OpTrans implements ITransfer {
     Logger.debug("Receive: ", enData);
     this.receiveBuff.push(enData);
   }
+  public canRW(): boolean {
+    if (this.ws === undefined) {
+      return false;
+    }
+    if (this.ws.readyState !== WebSocket.OPEN) {
+      return false;
+    }
+    return true;
+    // this.ws.readyState
+    // return this.ws.
+  }
 
   public onClose(evt: any): void {
     Logger.info("Close ws server success", this.wsUri);
@@ -88,15 +103,17 @@ class OpTrans implements ITransfer {
   public async receive(): Promise<Uint8Array> {
     let data;
     while (true) {
-      await delay(100); // Don't check too often
       data = await this.receiveBuff.shift();
       if (data !== undefined) {
         break;
+      }
+
+      if (this.receiveBuff.length === 0) {
+        await delay(1000); // Don't check too often
       }
     }
     return data;
   }
 }
-
 
 export { ISerialize, ITransfer, cheipr as model, OpTrans };

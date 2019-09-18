@@ -13,7 +13,11 @@
 
 import { Logger } from "../util/logger";
 import { Assert } from "../util/util";
-import { ChepirBaseCanvas, IChepirevents, IPainterEvent } from "./chepir_base_canvas";
+import {
+  ChepirBaseCanvas,
+  IChepirevents,
+  IPainterEvent
+} from "./chepir_base_canvas";
 import { Operation, Track } from "./operation";
 import { OpTrans } from "./serializable";
 import { timingSafeEqual } from "crypto";
@@ -23,7 +27,7 @@ enum Colors {
   RED,
   GREEN,
   GRAY,
-  BLACK,
+  BLACK
 }
 
 class Position {
@@ -99,7 +103,8 @@ class Painter {
 function RegisterPaintEvent(
   htmlElement: HTMLElement,
   painterEvent: IChepirevents,
-  isRegister: boolean = true): void {
+  isRegister: boolean = true
+): void {
   Logger.info("Add event listener");
 
   const events = painterEvent.getAllEvents();
@@ -122,13 +127,13 @@ function RegisterPaintEvent(
  */
 function DeRegisterPaintEvent(
   htmlElement: HTMLElement,
-  painterEvent: IChepirevents): void {
+  painterEvent: IChepirevents
+): void {
   Logger.info("Remove event listener");
   return RegisterPaintEvent(htmlElement, painterEvent, false);
 }
 
 class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
-
   protected eventMaps: Array<[string, string]> = [
     // Mocse event.
     ["mousedown", "atMouseDown"],
@@ -140,7 +145,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     ["touchstart", "atTouchStart"],
     ["touchmove", "atTouchMove"],
     ["touchend", "atTouchEnd"],
-    ["touchcancel", "atTouchCancel"],
+    ["touchcancel", "atTouchCancel"]
   ];
 
   private painter: Painter;
@@ -165,11 +170,13 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
   private identifer2oper: Map<number, number>;
   private operCnt: number = -1;
 
+  private uuid2oper: Map<string, Operation>;
+
   public constructor(
     ctx: CanvasRenderingContext2D | null,
     canvas: HTMLCanvasElement | null,
     width: number = 800,
-    height: number = 800,
+    height: number = 800
   ) {
     super(ctx, canvas, width, height);
 
@@ -179,15 +186,27 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     // this.points = [];
     this.operations = [];
     this.identifer2oper = new Map();
+    this.uuid2oper = new Map();
     this.opTrans = new OpTrans();
     this.opTrans.setUp();
     this.readOnly = false;
   }
   public async readFromTrans() {
+    this.readOnly = true;
     while (this.readOnly) {
       const enData = await this.opTrans.receive();
-      Operation.decode(enData);
+      const op = Operation.decode(enData);
+      Logger.info("Get op", op);
+
+      // Check if the operation already created
+      const obj: Operation | undefined = this.uuid2oper.get(op.getUUID());
+      if (obj === undefined) {
+        this.uuid2oper.set(op.getUUID(), op);
+      } else {
+        obj.merge(op);
+      }
     }
+    return;
   }
 
   /* ----------------------- evt process ------------------------- */
@@ -229,12 +248,15 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
       lastPainterPos,
       curPainterPos,
       this.painter.getCurColor(),
-      this.painter.getLineWidth());
+      this.painter.getLineWidth()
+    );
 
     curOper.pushTrack(new Track(curPainterPos, width));
     curOper.onFinish();
-    Logger.debug("Painting is OVER!! And get line length: ",
-      curOper.getTrack().length);
+    Logger.debug(
+      "Painting is OVER!! And get line length: ",
+      curOper.getTrack().length
+    );
 
     return;
   }
@@ -255,14 +277,13 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
         lastPainterPos,
         curPainterPos,
         this.painter.getCurColor(),
-        this.painter.getLineWidth(),
+        this.painter.getLineWidth()
       );
 
       curOper.pushTrack(new Track(curPainterPos, width));
     }
     return;
   }
-
 
   /**
    * This painter support multi touch, every touch event has their own
@@ -275,14 +296,15 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
    *
    */
 
-
   public atTouchStart(evt: Event) {
     const ev = evt as TouchEvent;
     const length: number = ev.changedTouches.length;
     for (let i = 0; i < length; i++) {
       const idx = ev.changedTouches[i].identifier;
       const curPainterPos = this._getPosition(ev.changedTouches[i]);
-      this.operations.push(new Operation(this.painter.getCurPos(), this.opTrans));
+      this.operations.push(
+        new Operation(this.painter.getCurPos(), this.opTrans)
+      );
       this.operCnt++;
 
       this.identifer2oper.set(idx, this.operCnt);
@@ -319,7 +341,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
           lastPainterPos,
           curPainterPos,
           this.painter.getCurColor(),
-          this.painter.getLineWidth(),
+          this.painter.getLineWidth()
         );
       }
 
@@ -357,29 +379,27 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
       //  this.painter.getCurColor(), this.painter.getCurPresure());
 
       curOper.pushTrack(new Track(curPainterPos, width));
-      Logger.debug("Painting is OVER!! And get line length: ",
-        curOper.getTrack().length,
+      Logger.debug(
+        "Painting is OVER!! And get line length: ",
+        curOper.getTrack().length
       );
       curOper.onFinish();
       this.identifer2oper.delete(idx);
       Logger.debug("idx ", idx, " ended!");
     }
     return;
-
   }
 
   public atTouchCancel(evt: Event) {
     const ev = evt as TouchEvent;
     Logger.debug(ev.targetTouches.length, "touch is canceled!");
   }
-
 }
-
 
 export {
   Colors,
   Position,
   ChepirCanvas,
   RegisterPaintEvent,
-  DeRegisterPaintEvent,
+  DeRegisterPaintEvent
 };
