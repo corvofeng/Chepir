@@ -47,17 +47,23 @@ const wss: WebSocket.Server = new WebSocket.Server({
 
 wss.on("connection", (ws: WebSocket) => {
 
+    ws.binaryType = "arraybuffer";
     // connection is up, let"s add a simple simple event
-    ws.on("message", (message: string) => {
+    ws.on("message", (message: ArrayBuffer) => {
 
         // log the received message and send it back to the client
-        Logger.debug("Get message: ", message);
+        // Logger.debug("Get message: ", message);
         // console.log("received: %s", message);
-        ws.send(`Hello, you sent -> ${message}`);
+        // ws.send(`Hello, you sent -> ${message}`);
+        Logger.debug("Get message: ", new Uint8Array(message));
+        // console.log(message);
+        // Logger.info("Message type", message.type);
+        // Logger.info("Message data", message.data);
+        ws.send(message);
     });
 
     // send immediatly a feedback to the incoming connection
-    ws.send("Hi there, I am a WebSocket server");
+    // ws.send("Hi there, I am a WebSocket server");
 });
 
 // start our server

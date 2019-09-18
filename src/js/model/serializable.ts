@@ -21,9 +21,16 @@ import { delay } from "../util/util";
  */
 interface ISerialize {
   encode(): Uint8Array;
-  decode(data: Uint8Array): any;
-}
 
+  /**
+   * TODO: The interface should have `static decode` fucntion
+   * Now the interfact doesn't support the static member,
+   * In `Operation`, I use the `static decode` to fake.
+   * https://github.com/Microsoft/TypeScript/issues/13462
+   * https://github.com/microsoft/TypeScript/issues/14600
+   */
+  /* static */ _decode(data: Uint8Array, orgObj?: any): any;
+}
 /**
  * For object who will transfer the data.
  */
@@ -46,6 +53,7 @@ class OpTrans implements ITransfer {
   public async setUp() {
     return new Promise((resolve) => {
       this.ws = new WebSocket(this.wsUri);
+      this.ws.binaryType = "arraybuffer";
       if (this.ws === undefined) {
         Logger.error("Connect to ", this.wsUri, "failed!!");
       }
@@ -59,8 +67,9 @@ class OpTrans implements ITransfer {
     });
   }
   public onReceive(evt: MessageEvent): void {
-    Logger.info("Receive", evt.data);
-    this.receiveBuff.push(evt.data);
+    const enData = new Uint8Array(evt.data);
+    Logger.debug("Receive: ", enData);
+    this.receiveBuff.push(enData);
   }
 
   public onClose(evt: any): void {
@@ -73,13 +82,13 @@ class OpTrans implements ITransfer {
       Logger.error("Can't get the websockte connection for ", this.wsUri);
       return;
     }
-    await this.ws.send(data);
+    await this.ws.send(Buffer.from(data));
   }
 
-  public async receive(): Promise<any> {
+  public async receive(): Promise<Uint8Array> {
     let data;
     while (true) {
-      await delay(100);
+      await delay(100); // Don't check too often
       data = await this.receiveBuff.shift();
       if (data !== undefined) {
         break;
