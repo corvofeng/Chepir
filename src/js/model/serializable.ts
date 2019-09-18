@@ -13,7 +13,7 @@
 
 import { cheipr } from "./trans";
 import { Logger } from "../util/logger";
-import { rejects } from "assert";
+import { delay } from "../util/util";
 
 /**
  * This is the interface for serialize object, object should implements it to
@@ -29,17 +29,19 @@ interface ISerialize {
  */
 interface ITransfer {
   send(data: any): void;
-  receive(evt: MessageEvent): any;
+  receive(): any;
 }
 
 class OpTrans implements ITransfer {
   private wsUri: string;
   private ws: WebSocket | undefined;
+  private receiveBuff: any[];
 
   constructor(wsUri: string = "ws://127.0.0.1:8999/") {
     this.wsUri = wsUri;
     // this.ws.onopen = function()
     this.ws = undefined;
+    this.receiveBuff = [];
   }
   public async setUp() {
     return new Promise((resolve) => {
@@ -53,8 +55,12 @@ class OpTrans implements ITransfer {
         Logger.info("Connect ws server success", this.wsUri);
         resolve(undefined);
       };
-      this.ws.onmessage = this.receive.bind(this);
+      this.ws.onmessage = this.onReceive.bind(this);
     });
+  }
+  public onReceive(evt: MessageEvent): void {
+    Logger.info("Receive", evt.data);
+    this.receiveBuff.push(evt.data);
   }
 
   public onClose(evt: any): void {
@@ -70,9 +76,18 @@ class OpTrans implements ITransfer {
     await this.ws.send(data);
   }
 
-  public receive(evt: MessageEvent): any {
-    Logger.info("Receive", evt.data);
+  public async receive(): Promise<any> {
+    let data;
+    while (true) {
+      await delay(100);
+      data = await this.receiveBuff.shift();
+      if (data !== undefined) {
+        break;
+      }
+    }
+    return data;
   }
 }
+
 
 export { ISerialize, ITransfer, cheipr as model, OpTrans };

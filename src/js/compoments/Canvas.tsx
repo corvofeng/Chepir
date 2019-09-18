@@ -17,8 +17,8 @@ export class CanvasComponent extends React.Component {
     this.intervalTime = 1000;
   }
 
-  public componentDidMount() {
-    this.updateCanvas();
+  public async componentDidMount() {
+    await this.updateCanvas();
 
     this.interval = window.setInterval(this.timer, this.intervalTime);
   }
@@ -27,7 +27,7 @@ export class CanvasComponent extends React.Component {
     Logger.debug("In canvas timer");
   }
 
-  public updateCanvas() {
+  public async updateCanvas() {
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
     let width: number = 800;
     let height: number = 800;

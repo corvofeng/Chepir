@@ -4,6 +4,12 @@ function Assert(b: boolean) {
   }
 }
 
+async function delay(interval: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, interval);
+  });
+}
+
 // generate uuid
 function guid() {
   function s4() {
@@ -19,4 +25,4 @@ function isMochaRunning(): boolean {
   return typeof global.it === "function";
 }
 
-export { Assert, guid, isMochaRunning };
+export { Assert, guid, isMochaRunning, delay };
