@@ -17,7 +17,7 @@
 //      master  => test-src/typescript-consumer/index.ts
 import * as jsLogger from "js-logger/src/logger";
 import { ILogger, ILogHandler, IContext } from "js-logger/src/types";
-import { divLog } from "./divlog";
+// import { divLog } from "./divlog";
 
 jsLogger.useDefaults();
 const myLogger: ILogger = jsLogger.get("Chepir");
@@ -29,7 +29,7 @@ const defaultHandler = jsLogger.createDefaultHandler();
 function trans(messages: any[], context: IContext): void {
 
   // Write a log to div
-  divLog.logWithCopy(messages, context);
+  // divLog.logWithCopy(messages, context);
 
   // Also print log in console
   // we need add this beacuse the function `setHandler` will change

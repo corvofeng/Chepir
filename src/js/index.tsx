@@ -16,7 +16,12 @@ import { Logger } from "./util/logger";
 // );
 Logger.info("Start chepir !!");
 
-ReactDOM.render(<CanvasComponent />, document.getElementById("chepir"));
+/**
+ * This will search all  <div id="chepir-xxx">, and render with Canvas
+ */
+document.querySelectorAll("[id*=chepir-]").forEach((ele) => {
+  ReactDOM.render(<CanvasComponent />, ele);
+});
 
 
 /*
