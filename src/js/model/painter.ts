@@ -176,7 +176,8 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     ctx: CanvasRenderingContext2D | null,
     canvas: HTMLCanvasElement | null,
     width: number = 800,
-    height: number = 800
+    height: number = 800,
+    wsUrl?: string,
   ) {
     super(ctx, canvas, width, height);
 
@@ -187,7 +188,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     this.operations = [];
     this.identifer2oper = new Map();
     this.uuid2oper = new Map();
-    this.opTrans = new OpTrans("ws://ubt:8999");
+    this.opTrans = new OpTrans(wsUrl);
     this.opTrans.setUp();
     this.readOnly = false;
   }

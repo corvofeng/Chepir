@@ -4,6 +4,14 @@ import { Logger } from "../util/logger";
 import { ChepirCanvas, RegisterPaintEvent, DeRegisterPaintEvent } from "../model/painter";
 
 export class CanvasComponent extends React.Component {
+  public static getEleAttr(ele: Element, attr: string): string | undefined {
+    const a = ele.getAttribute("ws-url");
+    let val: string | undefined;
+    if (a !== null) {
+      val = a;
+    }
+    return val;
+  }
   private element: HTMLDivElement | null;
   private chepirCanvas: ChepirCanvas | null;
   private interval: number;
@@ -29,8 +37,8 @@ export class CanvasComponent extends React.Component {
 
   public async updateCanvas() {
     const canvasHTML: HTMLCanvasElement = ReactDOM.findDOMNode(this) as HTMLCanvasElement;
-    let width: number = 800;
-    let height: number = 800;
+    let width: number = 400;
+    let height: number = 400;
 
     if (this.element) {
       width = this.element.offsetWidth;
@@ -41,13 +49,22 @@ export class CanvasComponent extends React.Component {
     const canvas: any = this.refs.canvas;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height);
+    // Get some config in element attributes.
+    const ele = ReactDOM.findDOMNode(this) as Element;
+    const pNode = ele.parentNode as Element;
+
+    const wsURL = CanvasComponent.getEleAttr(pNode, "ws-url");
+    Logger.debug("Get attr: ws-url", wsURL);
+
+    this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height, wsURL);
     RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
     await this.chepirCanvas.readFromTrans();
     // Every time the div changed, call updateDimensions
     // window.addEventListener("resize", this);
 
   }
+
+
 
   public componentWillUnmount() {
     window.clearInterval(this.interval);
@@ -72,7 +89,8 @@ export class CanvasComponent extends React.Component {
         ref={(ele) => { this.element = ele; }}
         style={{
           width: "100%",
-          height: "800px",
+          height: "400px",
+          // height: `${}`,
         }}
       >
         <canvas ref="canvas"
