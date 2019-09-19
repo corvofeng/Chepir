@@ -187,7 +187,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     this.operations = [];
     this.identifer2oper = new Map();
     this.uuid2oper = new Map();
-    this.opTrans = new OpTrans();
+    this.opTrans = new OpTrans("ws://ubt:8999");
     this.opTrans.setUp();
     this.readOnly = false;
   }
@@ -196,7 +196,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     while (this.readOnly) {
       const enData = await this.opTrans.receive();
       const op = Operation.decode(enData);
-      Logger.info("Get op", op);
+      Logger.info("Get op length", op.getTrack().length);
 
       // Check if the operation already created
       const obj: Operation | undefined = this.uuid2oper.get(op.getUUID());

@@ -112,7 +112,6 @@ class Operation implements ISerialize {
       op.startPos = this.startPos;
       op.isDraw = this.isDraw;
       op.uuid = this.uuid;
-      this.transPosition += 1;
     }
 
     op.uuid = this.uuid;
