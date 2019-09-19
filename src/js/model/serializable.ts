@@ -45,26 +45,29 @@ interface ITransfer {
 
 class OpTrans implements ITransfer {
   private wsUri: string;
+  private wsPath: string;
   private ws: WebSocket | undefined;
   private receiveBuff: any[];
 
-  constructor(wsUri: string = "ws://127.0.0.1:8999/") {
+  constructor(wsUri: string = "ws://127.0.0.1:8999", wsPath: string = "/") {
     this.wsUri = wsUri;
+    this.wsPath = wsPath;
     // this.ws.onopen = function()
     this.ws = undefined;
     this.receiveBuff = [];
   }
   public async setUp() {
     return new Promise(resolve => {
-      this.ws = new WebSocket(this.wsUri);
+      const url = this.wsUri + this.wsPath;
+      this.ws = new WebSocket(url);
       this.ws.binaryType = "arraybuffer";
       if (this.ws === undefined) {
-        Logger.error("Connect to ", this.wsUri, "failed!!");
+        Logger.error("Connect to ", url, "failed!!");
       }
       // this.ws.onopen = this.onOpen.bind(this);
       this.ws.onclose = this.onClose.bind(this);
       this.ws.onopen = (/*evt*/) => {
-        Logger.info("Connect ws server success", this.wsUri);
+        Logger.info("Connect ws server success", url);
         resolve(undefined);
       };
       this.ws.onmessage = this.onReceive.bind(this);

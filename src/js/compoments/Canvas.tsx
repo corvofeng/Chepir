@@ -5,7 +5,7 @@ import { ChepirCanvas, RegisterPaintEvent, DeRegisterPaintEvent } from "../model
 
 export class CanvasComponent extends React.Component {
   public static getEleAttr(ele: Element, attr: string): string | undefined {
-    const a = ele.getAttribute("ws-url");
+    const a = ele.getAttribute(attr);
     let val: string | undefined;
     if (a !== null) {
       val = a;
@@ -54,9 +54,10 @@ export class CanvasComponent extends React.Component {
     const pNode = ele.parentNode as Element;
 
     const wsURL = CanvasComponent.getEleAttr(pNode, "ws-url");
-    Logger.debug("Get attr: ws-url", wsURL);
+    const wsPath = CanvasComponent.getEleAttr(pNode, "ws-path");
+    Logger.debug("Get attr: ws-url", wsURL, "ws-path", wsPath);
 
-    this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height, wsURL);
+    this.chepirCanvas = new ChepirCanvas(ctx, canvas, width, height, wsURL, wsPath);
     RegisterPaintEvent(canvasHTML, this.chepirCanvas, true);
     await this.chepirCanvas.readFromTrans();
     // Every time the div changed, call updateDimensions

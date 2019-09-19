@@ -5,17 +5,24 @@ import { AddressInfo } from "net";
 
 import * as jsLogger from "js-logger/src/logger";
 import { IContext } from "js-logger/src/types";
+import { S_IWUSR } from "constants";
+import { exact } from "prop-types";
 
 const Logger = jsLogger.get("Chepir-Back");
 Logger.setLevel(jsLogger.DEBUG);
 jsLogger.setHandler((messages: any[], context: IContext) => {
-    const msg: string = Array.prototype.slice.call(messages, 0)
-        .join(" ");
+  const msg: string = Array.prototype.slice.call(messages, 0).join(" ");
 
-    /* tslint:disable */
-    console.log(`[${context.level.name[0]}]`, msg);
-    /* tslint:enable */
+  /* tslint:disable */
+  console.log(`[${context.level.name[0]}]`, msg);
+  /* tslint:enable */
 });
+
+async function delay(interval: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, interval);
+  });
+}
 
 /**
  * Usage::
@@ -38,36 +45,61 @@ jsLogger.setHandler((messages: any[], context: IContext) => {
 const app = express();
 
 // initialize a simple http server
-const server = http.createServer(app);
+const server = http.createServer(app as any);
 
 // initialize the WebSocket server instance
-const wss: WebSocket.Server = new WebSocket.Server({
-    server,
-});
+const wss: WebSocket.Server = new WebSocket.Server({ server });
 
-wss.on("connection", (ws: WebSocket) => {
+const exampleRWPath = "BL6NsD2TWI";
+const exampleROPath = "N2NhMjUzZm";
 
-    ws.binaryType = "arraybuffer";
-    // connection is up, let"s add a simple simple event
+let dataBuffList: ArrayBuffer[] = [];
+
+wss.on("connection", async (ws: WebSocket, req: http.IncomingMessage) => {
+  Logger.info("Get url", req.url);
+  ws.binaryType = "arraybuffer";
+  // connection is up, let"s add a simple simple event
+  if (req.url === "/" + exampleRWPath) {
     ws.on("message", (message: ArrayBuffer) => {
-
-        // log the received message and send it back to the client
-        // Logger.debug("Get message: ", message);
-        // console.log("received: %s", message);
-        // ws.send(`Hello, you sent -> ${message}`);
-        Logger.debug("Get message: ", new Uint8Array(message));
-        // console.log(message);
-        // Logger.info("Message type", message.type);
-        // Logger.info("Message data", message.data);
-        ws.send(message);
+      // log the received message and send it back to the client
+      // Logger.debug("Get message: ", message);
+      // console.log("received: %s", message);
+      // ws.send(`Hello, you sent -> ${message}`);
+      dataBuffList.push(message);
+      Logger.debug("Get message: ", new Uint8Array(message));
+      // console.log(message);
+      // Logger.info("Message type", message.type);
+      // Logger.info("Message data", message.data);
+      // ws.send(message);
     });
+  } else if (req.url === "/" + exampleROPath) {
+    let ok = true;
+    while (ok) {
+      while (dataBuffList.length !== 0) {
+        const msg = dataBuffList.shift();
+        try {
+          ws.send(msg);
+        } catch (error) {
+          Logger.error("Send message error:", error);
+          dataBuffList.push(msg);
+          ok = false;
+          break;
+        }
+      }
+      await delay(100);
+    }
+  }
 
-    // send immediatly a feedback to the incoming connection
-    // ws.send("Hi there, I am a WebSocket server");
+  // send immediatly a feedback to the incoming connection
+  // ws.send("Hi there, I am a WebSocket server");
 });
+
+// app.get('/' + exampleRWPath, function(req, res, next) {
+//   console.log('receiving get request');
+// });
 
 // start our server
 server.listen(process.env.PORT || 8999, () => {
-    const port = (server.address() as AddressInfo).port;
-    Logger.info(`Server started on port ${port} :)`);
+  const port = (server.address() as AddressInfo).port;
+  Logger.info(`Server started on port ${port} :)`);
 });
