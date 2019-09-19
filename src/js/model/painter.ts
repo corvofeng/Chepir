@@ -225,7 +225,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     let t = tracks[0];
     let tNext: Track;
     this._draw(startPos, t.pos, this.painter.getCurColor(), t.width);
-    for (let i = 1; i < tracks.length - 1; i++) {
+    for (let i = 0; i < tracks.length - 1; i++) {
       t = tracks[i];
       tNext = tracks[i + 1];
       this._draw(t.pos, tNext.pos, this.painter.getCurColor(), tNext.width);
