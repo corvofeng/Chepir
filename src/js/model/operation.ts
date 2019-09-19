@@ -80,6 +80,10 @@ class Operation implements ISerialize {
     }
   }
 
+  public getStartPosition(): Position {
+    return this.startPos;
+  }
+
   public getLastPosition(): Position {
     if (this.tracks.length === 0) {
       return this.startPos;

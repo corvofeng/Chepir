@@ -178,6 +178,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     width: number = 800,
     height: number = 800,
     wsUrl?: string,
+    wsPath?: string
   ) {
     super(ctx, canvas, width, height);
 
@@ -188,7 +189,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
     this.operations = [];
     this.identifer2oper = new Map();
     this.uuid2oper = new Map();
-    this.opTrans = new OpTrans(wsUrl);
+    this.opTrans = new OpTrans(wsUrl, wsPath);
     this.opTrans.setUp();
     this.readOnly = false;
   }
@@ -203,11 +204,32 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
       const obj: Operation | undefined = this.uuid2oper.get(op.getUUID());
       if (obj === undefined) {
         this.uuid2oper.set(op.getUUID(), op);
+        this.operation2draw(op.getStartPosition(), op);
       } else {
         obj.merge(op);
+        this.operation2draw(obj.getLastPosition(), op);
       }
     }
     return;
+  }
+
+  public operation2draw(startPos: Position, op: Operation) {
+    const tracks = op.getTrack();
+
+    if (tracks.length === 0) {
+      // a little point
+      this._draw(startPos, startPos, this.painter.getCurColor(), 1);
+      return;
+    }
+
+    let t = tracks[0];
+    let tNext: Track;
+    this._draw(startPos, t.pos, this.painter.getCurColor(), t.width);
+    for (let i = 1; i < tracks.length - 1; i++) {
+      t = tracks[i];
+      tNext = tracks[i + 1];
+      this._draw(t.pos, tNext.pos, this.painter.getCurColor(), tNext.width);
+    }
   }
 
   /* ----------------------- evt process ------------------------- */
@@ -270,7 +292,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
       const lastPainterPos = curOper.getLastPosition();
 
       const curPainterPos = this._getPosition(e);
-      const width = 0.1;
+      const width = this.painter.getLineWidth();
 
       this.painter.setPosition(curPainterPos);
 
@@ -278,7 +300,7 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
         lastPainterPos,
         curPainterPos,
         this.painter.getCurColor(),
-        this.painter.getLineWidth()
+        width
       );
 
       curOper.pushTrack(new Track(curPainterPos, width));
@@ -335,14 +357,14 @@ class ChepirCanvas extends ChepirBaseCanvas implements IPainterEvent {
 
       const lastPainterPos = curOper.getLastPosition();
 
-      const width = 0.1;
+      const width = this.painter.getLineWidth();
 
       if (curOper.getTrack().length > 2) {
         this._draw(
           lastPainterPos,
           curPainterPos,
           this.painter.getCurColor(),
-          this.painter.getLineWidth()
+          width
         );
       }
 
