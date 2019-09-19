@@ -83,8 +83,6 @@ class OpTrans implements ITransfer {
       return false;
     }
     return true;
-    // this.ws.readyState
-    // return this.ws.
   }
 
   public onClose(evt: any): void {
@@ -97,7 +95,7 @@ class OpTrans implements ITransfer {
       Logger.error("Can't get the websockte connection for ", this.wsUri);
       return;
     }
-    await this.ws.send(Buffer.from(data));
+    await this.ws.send(data);
   }
 
   public async receive(): Promise<Uint8Array> {
