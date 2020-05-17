@@ -23,7 +23,7 @@
     "jquery": "^3.3.1",
     "js-logger": "^1.6.0",
     "jsdoc": "^3.5.5",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.3",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "sketchpad": "^0.1.0",
