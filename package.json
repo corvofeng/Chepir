@@ -35,7 +35,7 @@
     "@types/codemirror": "0.0.93",
     "@types/mocha": "^7.0.2",
     "awesome-typescript-loader": "^5.2.1",
-    "codemirror": "^5.42.0",
+    "codemirror": "^5.58.2",
     "css-loader": "^3.5.3",
     "html-webpack-plugin": "^4.3.0",
     "jsdom": "^16.2.2",
