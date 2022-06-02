@@ -40,7 +40,7 @@
     "html-webpack-plugin": "^4.3.0",
     "jsdom": "^16.2.2",
     "mocha": "^7.1.2",
-    "protobufjs": "^6.8.8",
+    "protobufjs": "^6.11.3",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.4",
